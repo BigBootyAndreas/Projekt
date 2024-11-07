@@ -2,7 +2,7 @@ import os
 import numpy as np
 
 # Specify the folder containing the compressed .npz files
-folder_path = 'C:\\Users\\Ali\\Downloads\\data7'
+folder_path = 'C:\\Users\\Ali\\OneDrive - Aalborg Universitet\\Desktop\\P7\\Data\\data1'
 
 # List all files in the folder
 files = os.listdir(folder_path)
