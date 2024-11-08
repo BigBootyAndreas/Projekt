@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-csv_path = 'C:\\Users\\Ali\\OneDrive - Aalborg Universitet\\Desktop\\P7\\Data\\data1\\run1_segment_20241107_124656.csv'  # Replace this with the actual file path
+csv_path = 'C:\\Users\\Ali\\OneDrive - Aalborg Universitet\\Desktop\\P7\\Data\\data4\\run0_segment_20241108_102620.csv'  # Replace this with the actual file path
 def plot_time_frequency(csv_path):
     # Read the CSV file
     data = pd.read_csv(csv_path)

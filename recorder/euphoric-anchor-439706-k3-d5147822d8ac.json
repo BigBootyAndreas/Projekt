@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "euphoric-anchor-439706-k3",
+  "private_key_id": "d5147822d8acb1e0bc5c89909229962bf0802550",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDFTejd9driXLlU\nS1OXTKKw4hSd7wWqxWJiQ6U+vcYlwU+IHtcnDzcs/XSqZ2cuQuPzu6xEF0mTApXL\nhyAI9TtHQxX5X0mBH65OB9nh9PsWM7yQWXw8C+ETmk64tk133iVRsq4ZzzRmMlM/\nkGew9keaHdwlNPLRwq9zJCf5dI5qW9FpYpi2pRJrrTQ2zAB4xRCrvNGOPVMSrC00\nagbCCfBmD+yUeAn7LeIl/IehyMX/8h/EfIBNsuFV6CdA9nN6aVQo/QYnyk2eZOR/\ny0hT4yCtQA2m0ije4of/vPEMXM4EICeNLnCEMmrP/7bkxDa46CY7Mxe4JefXqzWa\ns5+KI54tAgMBAAECggEAKm+2Iw1W2YJ/gwOblEpxoJFTxV9MTP1cyo1JnJvFI0g3\ncqvNc1N4ttbB0cfhP6g37quiItgOZU30SX0D9SFHsW1aq9LklJ7rhtF1+b1PBui0\nSSjSCXk1nRl+joh5U4uGY9LGUvtHxiZTVPPadYuW/W0oNSF1C4wv39g6N9NrsTCy\n1UeROMEf1ezy8lnRBcSfA5GxMT3qIxinPjp3ppIQdDk7xNNbC1KxRe9jU63GyNsS\nHSbOp03zozE7zYxk+2kOkVByz2BeLyI/n2oS3uMTPIg7rG6p1T30QPtFC2fF9iLe\nBhGYm1do7VXBAOKxj8Na8RTtVxEJmTfQYbXKch9xSQKBgQD3Mm0dDlf++wV0s/c2\nHWHUr17Gr4wzJq79WkBVQfgEwP5rOuB7lEy4PP0Ei9fEWd2vr1GlAE4jfhE2Y65a\nhRc9AT3R8RcuQghRALR1bo50szxUGnIcVT3vsnFf58I0pQS+KnV8RQyyk1bm0PAo\nEoTMdVGkfVYVC6J33KsdPNhgtQKBgQDMVKL5rcU+kp3ciWod24Ta77WnQVfeHjNG\nWO0j/DMxIUj9IhaUhgpWsIbJrHieebfsdlU3pHeJBbafYK+DWO09clOptB/U5ODZ\nzkUNo9GTRT6dQRby2r87v18nVwhZ+v2IeF+UAWXezGeIwl2q+vxihf7T6HcZ+x1p\nZTPDJ1fKmQKBgE0y51aiqyKLXGnU5kh1Jp9YYV3lZwB2fUHMFLlLj9xUNWBhk8ek\nSc1j5pSr46eDdTMvqmzASqbU8SUuPj4wwFAh+h99joK4xoYdlT3zV/PkIdwWIjrs\n+BnKfZO4+jKcsn19HxG/Mrb2QrZ02/t3xRdhMC0Ro3eRGZ0bQikwXlbdAoGBAILj\nUIa53pjnmIHV8Ijxvpf0Z5udSuj41YWhnz6m5i/5j2S/elFnz6WabK0xcw6pD71E\nS/BZxUybwVE0wRlVVJtA6gDSZnWcq8A51pgXMT+yYpqfQFEO+OMQAqcTpEDne5L4\n8NjBUH042LWNNC07m4KNLSCXT/vvlPaXomHHiQA5AoGBAJJmm5MDCU4pG+kG6Py+\nFsc7Im0scLWWVrAouksHZdI+5N0KGmugarb9nci9NwpuEu8twhSp+100gvm40PRB\nyQl0REv6c6MPfcTdYR6NG5TBur8zkowkD01fJgBpotkOD0Rnmo06B+SRbctleL8J\ndW3krpZKzeDtgWntrjWKkXTV\n-----END PRIVATE KEY-----\n",
+  "client_email": "python-script@euphoric-anchor-439706-k3.iam.gserviceaccount.com",
+  "client_id": "108740274123462897701",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/python-script%40euphoric-anchor-439706-k3.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

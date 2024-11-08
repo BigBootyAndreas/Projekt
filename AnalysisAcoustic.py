@@ -63,12 +63,12 @@ def perform_fft_analysis(directory):
     ax[0].grid(True)
 
     # Plot the spectrogram of the mean data with time as the x-axis
-    ax[1].specgram(mean_col3, NFFT=256, Fs=1.0 / (mean_time[1] - mean_time[0]), noverlap=128, cmap='viridis')
+    ax[1].specgram(mean_col3, NFFT=256, Fs=1.0 / (mean_time[1] - mean_time[0]), noverlap=128, cmap='plasma')
     ax[1].set_title('Spectrogram of Mean Acoustic Data')
     ax[1].set_xlabel('Time (s)')
     ax[1].set_ylabel('Frequency (Hz)')
     ax[1].grid(True)
 
-    # Adjust layout for better visualization
+    # Adjust layout for better visualization    
     plt.tight_layout()
     plt.show()
