@@ -5,6 +5,8 @@ from datetime import datetime
 # Path to the CSV file
 file_path = r"C:\\Users\\Ali\\OneDrive - Aalborg Universitet\\Desktop\\P7\\Data\\IMU\\IMU.csv"
 
+#test
+
 # Initialize lists to store data for plotting
 x_values = []
 y_values = []
