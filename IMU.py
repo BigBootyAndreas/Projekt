@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 
 # Path to the CSV file
-file_path = r"C:\\Users\\Ali\\OneDrive - Aalborg Universitet\\Desktop\\P7\\Data\\IMU\\IMU.csv"
+#file_path = r"C:\\Users\\Ali\\OneDrive - Aalborg Universitet\\Desktop\\P7\\Data\\IMU\\IMU.csv"
 
 #test
 
@@ -14,8 +14,9 @@ z_values = []
 time_values = []
 
 # Reading the CSV file
-with open(file_path, 'r') as csv_file:
-    reader = csv.reader(csv_file)
+def IMU_analysis(subdirs,directory):
+    with open(directory, 'r') as csv_file:
+     reader = csv.reader(csv_file)
     header = next(reader)  # Skip header if present
     
     for row in reader:
@@ -35,29 +36,29 @@ with open(file_path, 'r') as csv_file:
             except ValueError:
                 print(f"Invalid epoch value: {epoch_value}")
 
-# Plotting the graphs
-plt.figure(figsize=(14, 8))
+    # Plotting the graphs
+    plt.figure(figsize=(14, 8))
 
-# Plot for x vs. time
-plt.subplot(3, 1, 1)
-plt.plot(time_values, x_values, label='X Values', color='r')
-plt.title('X vs. Time')
-plt.xlabel('Time (s)')
-plt.ylabel('X')
+    # Plot for x vs. time
+    plt.subplot(3, 1, 1)
+    plt.plot(time_values, x_values, label='X Values', color='r')
+    plt.title('X vs. Time')
+    plt.xlabel('Time (s)')
+    plt.ylabel('X')
 
-# Plot for y vs. time
-plt.subplot(3, 1, 2)
-plt.plot(time_values, y_values, label='Y Values', color='g')
-plt.title('Y vs. Time')
-plt.xlabel('Time (s)')
-plt.ylabel('Y')
+    # Plot for y vs. time
+    plt.subplot(3, 1, 2)
+    plt.plot(time_values, y_values, label='Y Values', color='g')
+    plt.title('Y vs. Time')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Y')
 
-# Plot for z vs. time
-plt.subplot(3, 1, 3)
-plt.plot(time_values, z_values, label='Z Values', color='b')
-plt.title('Z vs. Time')
-plt.xlabel('Time (s)')
-plt.ylabel('Z')
+    # Plot for z vs. time
+    plt.subplot(3, 1, 3)
+    plt.plot(time_values, z_values, label='Z Values', color='b')
+    plt.title('Z vs. Time')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Z')
 
-plt.tight_layout()  # Adjusts spacing to prevent overlap
-plt.show()
+    plt.tight_layout()  # Adjusts spacing to prevent overlap
+    plt.show()

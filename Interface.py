@@ -2,6 +2,7 @@ import os
 from AnalysisAcoustic import perform_fft_analysis  # import
 from csv_compiler import npz_rm
 from csv_compiler import csv_compiler
+from IMU import IMU_analysis
 
 # Predefined paths for each person
 person_paths = {
@@ -11,33 +12,18 @@ person_paths = {
     'Theis': 'C:\\Users\\Person4\\Downloads\\data\\',
     'Zahid': 'C:\\Users\\Person5\\Downloads\\data\\',
 }
+def IMU(subdirs,directory):
+    print("Welcome to IMU analysis tool")
+    print("Please select your name from the list")
+    IMU_analysis(subdirs,directory)
 
-def main():
-    print("Welcome to the FFT Analysis Tool.")
+def acoustic(subdirs, directory):
+    print("Welcome to the Acoustic analysis tool.")
     print("Please select your name from the list:")
-    
-    persons = list(person_paths.keys())
-    for idx, person in enumerate(persons):
-        print(f"{idx + 1}. {person}")
-    
-    # Get user selection
-    choice = int(input("Enter the number corresponding to your name: ")) - 1
-
-    if 0 <= choice < len(persons):
-        selected_person = persons[choice]
-        directory = person_paths[selected_person]
-        print(f"You selected {selected_person}. Data directory: {directory}")
-
-        # List subdirectories in the selected path
-        subdirs = [d for d in os.listdir(directory) if os.path.isdir(os.path.join(directory, d))]
-        
-        if not subdirs:
-            print("No subdirectories found in the specified directory.")
-            return
-        
-        print("Please select a subfolder:")
-        for idx, subdir in enumerate(subdirs):
-            print(f"{idx + 1}. {subdir}")
+            
+    print("Please select a subfolder:")
+    for idx, subdir in enumerate(subdirs):
+        print(f"{idx + 1}. {subdir}")
 
         sub_choice = int(input("Enter the number corresponding to the subfolder: ")) - 1
 
@@ -77,5 +63,37 @@ def main():
     else:
         print("Invalid selection. Please restart and choose a valid number.")
 
+def main():
+    print ("Welcome to data processing")
+    print ("Please choose between Acoustic and IMU")
+    analysis_choice = input("Enter '1' for Acoustic analysis or '2' for IMU analysis: ")
+
+    persons = list(person_paths.keys())
+    for idx, person in enumerate(persons):
+        print(f"{idx + 1}. {person}")
+    
+    # Get user selection
+    choice = int(input("Enter the number corresponding to your name: ")) - 1
+
+    if 0 <= choice < len(persons):
+        selected_person = persons[choice]
+        directory = person_paths[selected_person]
+        print(f"You selected {selected_person}. Data directory: {directory}")
+
+        # List subdirectories in the selected path
+        subdirs = [d for d in os.listdir(directory) if os.path.isdir(os.path.join(directory, d))]
+        
+        if not subdirs:
+            print("No subdirectories found in the specified directory.")
+            return
+    # Run the selected analysis function
+        if analysis_choice == '1':
+            acoustic(subdirs, directory)
+        elif analysis_choice == '2':
+            IMU(subdirs,directory)
+        else:
+            print("Invalid selection. Please restart and choose '1' or '2'.")
+    else:
+        print("Invalid selection. Please restart and choose a valid person number.")
 if __name__ == "__main__":
     main()
