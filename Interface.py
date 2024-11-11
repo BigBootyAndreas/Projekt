@@ -53,14 +53,14 @@ def main():
 
             convert = input("Would you like to convert the files? (y/n)").lower()
             if convert in yes:
-                return True
+                convert_files = True
             elif convert in no:
-                return False
+                convert_files = False
             else:
                 print("Please respond with 'yes' or 'no'")
 
             # Convert files if selected
-            if convert == True:
+            if convert_files == True:
                 csv_compiler(subdir_path)
 
                 # Delete npz files after conversion
