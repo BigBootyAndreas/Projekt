@@ -1,6 +1,6 @@
 import os
 from AnalysisAcoustic import perform_fft_analysis  # import
-from csv_compiler import npz_rm
+from npz_cleaner import npz_rm
 from csv_compiler import csv_compiler
 
 # Predefined paths for each person
