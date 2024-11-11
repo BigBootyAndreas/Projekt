@@ -1,36 +1,37 @@
 import os
 import pandas as pd
-from datetime import datetime, timedelta
 
 # Define paths
 input_dir = "C:/TempData"
 output_dir = "C:/Done"
 
-# Define reference samples as lists of DataFrames for easy computation of patterns
-# Each reference sample here is assumed to be a 30-second segment saved as a CSV
+# Reference sample files as 30-second segments
 reference_sample_files = [
     "sample1.csv",
     "sample2.csv",
-    # Add more reference samples as needed
+    # Add more samples if needed
 ]
 
-# Load each reference sample as a DataFrame
+# Load each reference sample as a DataFrame and compute its mean and variance
 reference_samples = [pd.read_csv(os.path.join(input_dir, sample)) for sample in reference_sample_files]
 
-# Compute the average amplitude and variance of each reference sample
 def calculate_reference_features(sample):
     return {
         "mean_amplitude": sample["Amplitude"].mean(),
         "amplitude_variance": sample["Amplitude"].var(),
-        "mean_time": sample["Time_s_"].mean(),  # Optional, for more complex matching
     }
 
-# Create a list of reference features for each sample
+# Create list of reference features for each sample
 reference_features = [calculate_reference_features(sample) for sample in reference_samples]
 
-# Define matching tolerances for amplitude and time
-amplitude_tolerance = 0.05  # Adjust based on desired sensitivity
-time_tolerance = 0.05  # Adjust based on desired sensitivity
+# Define matching tolerances for amplitude
+amplitude_tolerance = 0.05
+amplitude_variance_tolerance = 0.1
+
+# Sampling parameters
+sample_rate = 16000  # in Hz
+window_samples = 30 * sample_rate  # 30 seconds of samples (480,000 samples at 16kHz)
+step_samples = 5 * sample_rate  # step by 5 seconds (80,000 samples at 16kHz)
 
 # Process each 5-minute data file
 files = sorted([f for f in os.listdir(input_dir) if os.path.isfile(os.path.join(input_dir, f))])
@@ -40,26 +41,18 @@ for file_name in files:
     file_path = os.path.join(input_dir, file_name)
     data = pd.read_csv(file_path)
 
-    # Convert 'Timestamp' column to datetime
-    data['Timestamp'] = pd.to_datetime(data['Timestamp'], format="%Y-%m-%d %H:%M:%S")
-
-    # Calculate window size (assumed to be 30 seconds)
-    window_size = 30 * 1000  # in milliseconds (assuming Timestamp is accurate to ms)
-    step_size = 5 * 1000  # step by 5 seconds to reduce computation
-
+    # Sliding window over the data in sample counts
+    start_index = 0
     matching_segments = []
 
-    # Sliding window over the data
-    start_index = 0
-    while start_index + window_size <= len(data):
-        # Extract the window segment
-        window_data = data.iloc[start_index : start_index + window_size]
+    while start_index + window_samples <= len(data):
+        # Extract the window segment of 30 seconds (480,000 samples)
+        window_data = data.iloc[start_index : start_index + window_samples]
 
         # Calculate features for the current window
         window_features = {
             "mean_amplitude": window_data["Amplitude"].mean(),
             "amplitude_variance": window_data["Amplitude"].var(),
-            "mean_time": window_data["Time_s_"].mean(),
         }
 
         # Compare window features with each reference sample
@@ -67,19 +60,19 @@ for file_name in files:
             amplitude_diff = abs(window_features["mean_amplitude"] - ref_features["mean_amplitude"])
             amplitude_variance_diff = abs(window_features["amplitude_variance"] - ref_features["amplitude_variance"])
 
-            if amplitude_diff <= amplitude_tolerance and amplitude_variance_diff <= amplitude_tolerance:
-                print(f"Match found for reference {ref_idx+1} in file {file_name} at index {start_index}")
+            if amplitude_diff <= amplitude_tolerance and amplitude_variance_diff <= amplitude_variance_tolerance:
+                print(f"Match found for reference {ref_idx+1} in file {file_name} at sample index {start_index}")
 
                 # Save matching segment details
                 matching_segments.append({
-                    "start_timestamp": window_data["Timestamp"].iloc[0],
-                    "end_timestamp": window_data["Timestamp"].iloc[-1],
+                    "start_sample": start_index,
+                    "end_sample": start_index + window_samples,
                     "reference_id": ref_idx+1,
                     "file_name": file_name
                 })
-        
-        # Slide window
-        start_index += step_size
+
+        # Move the sliding window by 80,000 samples (5 seconds)
+        start_index += step_samples
 
     # Save results to a file
     if matching_segments:
