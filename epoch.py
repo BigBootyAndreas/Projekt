@@ -1,6 +1,6 @@
 import csv
 import time
-path 
+
 # Function to convert epoch to milliseconds
 def convert_to_milliseconds(epoch):
     try:
