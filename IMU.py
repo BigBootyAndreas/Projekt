@@ -1,23 +1,61 @@
-import numpy as np
+import csv
 import matplotlib.pyplot as plt
-from scipy import signal
+from datetime import datetime
 
-# Step 1: Generate a synthetic signal (e.g., a sine wave with added noise)
-fs = 1000  # Sampling frequency in Hz
-duration = 2  # Duration in seconds
-t = np.linspace(0, duration, fs * duration, endpoint=False)  # Time vector
+# Path to the CSV file
+file_path = r"C:\\Users\\Ali\\OneDrive - Aalborg Universitet\\Desktop\\P7\\Data\\IMU\\IMU.csv"
 
-# Create a signal: a 50 Hz sine wave with added Gaussian noise
-signal_data = np.sin(2 * np.pi * 50 * t) + 0.5 * np.random.randn(len(t))
+# Initialize lists to store data for plotting
+x_values = []
+y_values = []
+z_values = []
+time_values = []
 
-# Step 2: Compute the PSD using Welch's method
-frequencies, psd = signal.welch(signal_data, fs, nperseg=1024)
+# Reading the CSV file
+with open(file_path, 'r') as csv_file:
+    reader = csv.reader(csv_file)
+    header = next(reader)  # Skip header if present
+    
+    for row in reader:
+        if len(row) >= 4:  # Ensure the row has at least 5 columns
+            epoch_value = row[4]  # 5th column (epoch in milliseconds)
+            
+            try:
+                # Convert epoch to seconds by dividing by 1000
+                epoch_in_seconds = float(epoch_value) / 1000
+                
+                # Collect data for plotting
+                time_values.append(epoch_in_seconds)
+                x_values.append(float(row[1]))  # Column 2 (X-axis data)
+                y_values.append(float(row[2]))  # Column 3 (Y-axis data)
+                z_values.append(float(row[3]))  # Column 4 (Z-axis data)
+                
+            except ValueError:
+                print(f"Invalid epoch value: {epoch_value}")
 
-# Step 3: Plot the PSD
-plt.figure(figsize=(10, 6))
-plt.semilogy(frequencies, psd)
-plt.title('Power Spectral Density (PSD)')
-plt.xlabel('Frequency [Hz]')
-plt.ylabel('Power/Frequency [dB/Hz]')
-plt.grid()
+# Plotting the graphs
+plt.figure(figsize=(14, 8))
+
+# Plot for x vs. time
+plt.subplot(3, 1, 1)
+plt.plot(time_values, x_values, label='X Values', color='r')
+plt.title('X vs. Time')
+plt.xlabel('Time (s)')
+plt.ylabel('X')
+
+# Plot for y vs. time
+plt.subplot(3, 1, 2)
+plt.plot(time_values, y_values, label='Y Values', color='g')
+plt.title('Y vs. Time')
+plt.xlabel('Time (s)')
+plt.ylabel('Y')
+
+# Plot for z vs. time
+plt.subplot(3, 1, 3)
+plt.plot(time_values, z_values, label='Z Values', color='b')
+plt.title('Z vs. Time')
+plt.xlabel('Time (s)')
+plt.ylabel('Z')
+
+plt.tight_layout()  # Adjusts spacing to prevent overlap
 plt.show()
