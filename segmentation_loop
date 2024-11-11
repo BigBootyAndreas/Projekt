@@ -1,0 +1,91 @@
+import os
+import pandas as pd
+from datetime import datetime, timedelta
+
+# Define paths
+input_dir = "C:/TempData"
+output_dir = "C:/Done"
+
+# Define reference samples as lists of DataFrames for easy computation of patterns
+# Each reference sample here is assumed to be a 30-second segment saved as a CSV
+reference_sample_files = [
+    "sample1.csv",
+    "sample2.csv",
+    # Add more reference samples as needed
+]
+
+# Load each reference sample as a DataFrame
+reference_samples = [pd.read_csv(os.path.join(input_dir, sample)) for sample in reference_sample_files]
+
+# Compute the average amplitude and variance of each reference sample
+def calculate_reference_features(sample):
+    return {
+        "mean_amplitude": sample["Amplitude"].mean(),
+        "amplitude_variance": sample["Amplitude"].var(),
+        "mean_time": sample["Time_s_"].mean(),  # Optional, for more complex matching
+    }
+
+# Create a list of reference features for each sample
+reference_features = [calculate_reference_features(sample) for sample in reference_samples]
+
+# Define matching tolerances for amplitude and time
+amplitude_tolerance = 0.05  # Adjust based on desired sensitivity
+time_tolerance = 0.05  # Adjust based on desired sensitivity
+
+# Process each 5-minute data file
+files = sorted([f for f in os.listdir(input_dir) if os.path.isfile(os.path.join(input_dir, f))])
+
+for file_name in files:
+    print(f"Processing file: {file_name}")
+    file_path = os.path.join(input_dir, file_name)
+    data = pd.read_csv(file_path)
+
+    # Convert 'Timestamp' column to datetime
+    data['Timestamp'] = pd.to_datetime(data['Timestamp'], format="%Y-%m-%d %H:%M:%S")
+
+    # Calculate window size (assumed to be 30 seconds)
+    window_size = 30 * 1000  # in milliseconds (assuming Timestamp is accurate to ms)
+    step_size = 5 * 1000  # step by 5 seconds to reduce computation
+
+    matching_segments = []
+
+    # Sliding window over the data
+    start_index = 0
+    while start_index + window_size <= len(data):
+        # Extract the window segment
+        window_data = data.iloc[start_index : start_index + window_size]
+
+        # Calculate features for the current window
+        window_features = {
+            "mean_amplitude": window_data["Amplitude"].mean(),
+            "amplitude_variance": window_data["Amplitude"].var(),
+            "mean_time": window_data["Time_s_"].mean(),
+        }
+
+        # Compare window features with each reference sample
+        for ref_idx, ref_features in enumerate(reference_features):
+            amplitude_diff = abs(window_features["mean_amplitude"] - ref_features["mean_amplitude"])
+            amplitude_variance_diff = abs(window_features["amplitude_variance"] - ref_features["amplitude_variance"])
+
+            if amplitude_diff <= amplitude_tolerance and amplitude_variance_diff <= amplitude_tolerance:
+                print(f"Match found for reference {ref_idx+1} in file {file_name} at index {start_index}")
+
+                # Save matching segment details
+                matching_segments.append({
+                    "start_timestamp": window_data["Timestamp"].iloc[0],
+                    "end_timestamp": window_data["Timestamp"].iloc[-1],
+                    "reference_id": ref_idx+1,
+                    "file_name": file_name
+                })
+        
+        # Slide window
+        start_index += step_size
+
+    # Save results to a file
+    if matching_segments:
+        result_filename = os.path.join(output_dir, f"matches_{file_name}.csv")
+        results_df = pd.DataFrame(matching_segments)
+        results_df.to_csv(result_filename, index=False)
+        print(f"Matching segments saved to {result_filename}")
+    else:
+        print("No matches found in this file.")
