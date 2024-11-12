@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 
-def segmentation_analysis(input_dir, window, step_size, rate_hz, sample_dir, output_dir):
+def segmentation_analysis(input_dir, window, step_size, rate_hz, sample_dir, output_dir, amp_tol, amp_var_tol):
 
     def calculate_reference_features(sample):
         amplitude_data = sample.iloc[:, 2]
@@ -20,8 +20,8 @@ def segmentation_analysis(input_dir, window, step_size, rate_hz, sample_dir, out
     reference_features = [calculate_reference_features(sample) for sample in reference_samples]
 
     # Define matching tolerances for amplitude
-    amplitude_tolerance = 0.0002
-    amplitude_variance_tolerance = 0.0002
+    amplitude_tolerance = amp_tol
+    amplitude_variance_tolerance = amp_var_tol
 
     # Sampling parameters
     sample_rate = rate_hz  # in Hz
