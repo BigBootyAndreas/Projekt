@@ -29,6 +29,10 @@ person_paths = {
     'Zahid': 'C:\\Users\\Person5\\Downloads\\data\\',
 }
 
+#Interface inputs
+yes = {'yes', 'y', 'ye', ''}
+no = {'no', 'n'}
+
 def IMU(directory):
     print("Welcome to the IMU analysis tool.")
     
@@ -58,16 +62,16 @@ def IMU(directory):
             if 0 <= choice < len(imu_files):
                 if choice in file_choice:
                     print("File already seleceted")
-                    if str(input("Are you done? (Yes or No) ")).strip().upper() == "YES":
+                    if str(input("Are you done? (y/n)")).strip().upper() in yes:
                         break
                 else: 
                     file_choice.append(choice)
-                    if str(input("Are you done? (Yes or No) ")).strip().upper() == "YES":
+                    if str(input("Are you done?(y/n)")).strip().upper() in yes:
                         break
         elif k == 0:
             if 0 <= choice < len(imu_files):
                 file_choice.append(choice)
-                if str(input("Are you done? (Yes or No) ")).strip().upper() == "YES":
+                if str(input("Are you done? (y/n)")).strip().upper() in yes:
                     break
                 k += 1
         else:
@@ -109,10 +113,6 @@ def acoustic(directory):
         selected_subdir = subdirs[sub_choice]
         subdir_path = os.path.join(directory, selected_subdir)
         print(f"You selected {selected_subdir}. Full path: {subdir_path}")
-        
-        # Ask if conversion is wanted
-        yes = {'yes', 'y', 'Y', 'ye', ''}
-        no = {'no', 'n'}
 
         convert = input("Would you like to convert the files? (y/n)").lower()
         if convert in yes:
