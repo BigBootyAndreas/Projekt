@@ -3,7 +3,7 @@ from AnalysisAcoustic import perform_fft_analysis  # import
 from npz_cleaner import npz_rm
 from csv_compiler import csv_compiler
 from IMU import IMU_analysis
-
+from IMU import plot_psd_data
 # Predefined paths for each person
 person_paths = {
     'Ali': r'C:\\Users\\Ali\\OneDrive - Aalborg Universitet\\Desktop\\P7\\Data\\',
@@ -34,17 +34,43 @@ def IMU(directory):
         print(f"{idx + 1}. {file}")
 
     # Let the user select a file
-    file_choice = int(input("Enter the number corresponding to the file: ")) - 1
-
-    if 0 <= file_choice < len(imu_files):
-        selected_file = imu_files[file_choice]
-        file_path = os.path.join(imu_directory, selected_file)
-        print(f"Processing file: {selected_file}")
+    file_choice = []
+    k = 0
+    while True:
+        choice = int(input("Enter the number corresponding to the file: ")) - 1
+        if k >= 1:
+            if 0 <= choice < len(imu_files):
+                if choice in file_choice:
+                    print("File already seleceted")
+                    if str(input("Are you done? (Yes or No) ")).strip().upper() == "YES":
+                        break
+                else: 
+                    file_choice.append(choice)
+                    if str(input("Are you done? (Yes or No) ")).strip().upper() == "YES":
+                        break
+        elif k == 0:
+            if 0 <= choice < len(imu_files):
+                file_choice.append(choice)
+                if str(input("Are you done? (Yes or No) ")).strip().upper() == "YES":
+                    break
+                k += 1
+        else:
+            print("Invalid selection. Please choose a valid file number.")
         
-        # Call the IMU analysis function with the selected file path
-        IMU_analysis([], file_path)
-    else:
-        print("Invalid selection. Please restart and choose a valid file number.")
+
+
+    # Create file paths based on user choices
+    file_path = []
+    for i in range(len(file_choice)):
+        selected_file = imu_files[file_choice[i]]
+        full_path = os.path.join(imu_directory, selected_file)
+        file_path.append(full_path)
+        print(f"Processing file: {selected_file}")
+
+    # Call the IMU analysis function with the selected file paths
+    IMU_analysis([], file_path, file_choice)
+
+
 
 
 def acoustic(directory):
