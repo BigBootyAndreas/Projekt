@@ -4,7 +4,7 @@ import pywt
 import numpy as np
 import pandas as pd
 
-#Function for IMU csv reader
+# Function for IMU csv reader
 def IMU_analysis(subdirs, file_path, file_choice, plot_type='psd'):
     # Initialize lists to store data for each file
     all_x_values = []
@@ -60,7 +60,6 @@ def IMU_analysis(subdirs, file_path, file_choice, plot_type='psd'):
         plot_psd_data(file_choice, all_time_values, all_x_values, all_y_values, all_z_values)
 
 # Function to perform wavelet transform and return processed data
-
 def wavelet_transform(data, wavelet='db4', level=4):
     # Perform Discrete Wavelet Transform (DWT) to filter the data
     coeffs = pywt.wavedec(data, wavelet, level=level)
@@ -70,32 +69,6 @@ def wavelet_transform(data, wavelet='db4', level=4):
     
     # Ensure the reconstructed data has the same length as the input
     return reconstructed_data[:len(data)]
-
-
-def plot_unprocessed_data(file_choice, time_values, x_values, y_values, z_values):
-    plt.figure(figsize=(14, 8))
-
-    for i, file_name in enumerate(file_choice):
-        plt.subplot(3, 1, 1)
-        plt.plot(time_values[i], x_values[i], label=f'X Values - {file_name}', color='r')
-        plt.title('X vs. Time (Unprocessed)')
-        plt.xlabel('Time (s)')
-        plt.ylabel('X')
-
-        plt.subplot(3, 1, 2)
-        plt.plot(time_values[i], y_values[i], label=f'Y Values - {file_name}', color='g')
-        plt.title('Y vs. Time (Unprocessed)')
-        plt.xlabel('Time (s)')
-        plt.ylabel('Y')
-
-        plt.subplot(3, 1, 3)
-        plt.plot(time_values[i], z_values[i], label=f'Z Values - {file_name}', color='b')
-        plt.title('Z vs. Time (Unprocessed)')
-        plt.xlabel('Time (s)')
-        plt.ylabel('Z')
-
-    plt.tight_layout()  # Adjusts spacing to prevent overlap
-    plt.show()
 
 # Function to plot Power Spectral Density (PSD) for each axis after wavelet processing
 def plot_psd_data(file_choices, all_time_values, all_x_values, all_y_values, all_z_values):
@@ -135,4 +108,30 @@ def plot_psd_data(file_choices, all_time_values, all_x_values, all_y_values, all
     plt.legend()
 
     plt.tight_layout()  # Adjusts spacing to prevent overlap between subplots
+    plt.show()
+
+
+def plot_unprocessed_data(file_choice, time_values, x_values, y_values, z_values):
+    plt.figure(figsize=(14, 8))
+
+    for i, file_name in enumerate(file_choice):
+        plt.subplot(3, 1, 1)
+        plt.plot(time_values[i], x_values[i], label=f'X Values - {file_name}', color='r')
+        plt.title('X vs. Time (Unprocessed)')
+        plt.xlabel('Time (s)')
+        plt.ylabel('X')
+
+        plt.subplot(3, 1, 2)
+        plt.plot(time_values[i], y_values[i], label=f'Y Values - {file_name}', color='g')
+        plt.title('Y vs. Time (Unprocessed)')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Y')
+
+        plt.subplot(3, 1, 3)
+        plt.plot(time_values[i], z_values[i], label=f'Z Values - {file_name}', color='b')
+        plt.title('Z vs. Time (Unprocessed)')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Z')
+
+    plt.tight_layout()  # Adjusts spacing to prevent overlap
     plt.show()
