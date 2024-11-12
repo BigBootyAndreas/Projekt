@@ -3,7 +3,26 @@ from AnalysisAcoustic import perform_fft_analysis  # import
 from npz_cleaner import npz_rm
 from csv_compiler import csv_compiler
 from IMU import IMU_analysis
+<<<<<<< HEAD
 from IMU import plot_psd_data
+=======
+from segmentation_loop import segmentation_analysis
+
+# Variables
+###################################################
+
+
+
+# Segmentation:
+sample_rate = 16000         # Data sample rate (Hz)
+window_samples = 5          # window size, should match sample size (s)
+step_size = 1               # Incremnts between each window scan (s)
+sample_dir = 'samples\\'    # Sample directory (default: 'samples\\')
+output_dir = 'results\\'    # Output directory (default: 'results\\')
+
+###################################################
+
+>>>>>>> df6ed6d103a1d3aca7d88d6df69d1017f9a0e73f
 # Predefined paths for each person
 person_paths = {
     'Ali': r'C:\\Users\\Ali\\OneDrive - Aalborg Universitet\\Desktop\\P7\\Data\\',
@@ -108,8 +127,21 @@ def acoustic(directory):
         else:
             print("Please respond with 'yes' or 'no'.")
 
-        # Perform the FFT analysis on the selected subdirectory
-        perform_fft_analysis(subdir_path)
+        print("Choose which analysis you want to conduct")
+        analysis_choice = input("Enter '1' for FFT analysis or '2' for segment analysis: ")
+
+        if analysis_choice == '1':  # FFT
+
+            # Perform the FFT analysis on the selected subdirectory
+            perform_fft_analysis(subdir_path)
+
+        elif analysis_choice == '2':  # Segmentation
+            
+            # Perform segmentation analysis
+            segmentation_analysis(subdir_path,window_samples, step_size, sample_rate, sample_dir, output_dir)
+
+        else:
+            print("Invalid selection. Please restart and choose '1' or '2'.")
     else:
         print("Invalid selection. Please restart and choose a valid subfolder.")
 
