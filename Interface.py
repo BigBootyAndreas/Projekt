@@ -3,9 +3,7 @@ from AnalysisAcoustic import perform_fft_analysis  # import
 from npz_cleaner import npz_rm
 from csv_compiler import csv_compiler
 from IMU import IMU_analysis
-<<<<<<< HEAD
 from IMU import plot_psd_data
-=======
 from segmentation_loop import segmentation_analysis
 
 # Variables
@@ -22,7 +20,6 @@ output_dir = 'results\\'    # Output directory (default: 'results\\')
 
 ###################################################
 
->>>>>>> df6ed6d103a1d3aca7d88d6df69d1017f9a0e73f
 # Predefined paths for each person
 person_paths = {
     'Ali': r'C:\\Users\\Ali\\OneDrive - Aalborg Universitet\\Desktop\\P7\\Data\\',
