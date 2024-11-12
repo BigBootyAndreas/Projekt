@@ -5,8 +5,8 @@ import numpy as np
 def segmentation_analysis(input_dir):
 
     # Define paths
-    sample_dir = 'samples'
-    output_dir = 'results'
+    sample_dir = 'samples\\'
+    output_dir = 'results\\'
 
     def calculate_reference_features(sample):
         amplitude_data = sample.iloc[:, 2]
@@ -16,7 +16,7 @@ def segmentation_analysis(input_dir):
         }
 
     # Reference sample files
-    reference_sample_files = [f for f in os.listdir(input_dir) if "sample" in f and f.endswith(".csv")]
+    reference_sample_files = [f for f in os.listdir(sample_dir) if "sample" in f and f.endswith(".csv")]
 
     # Load each reference sample as a DataFrame and compute its mean and variance
     reference_samples = [pd.read_csv(os.path.join(sample_dir, sample)) for sample in reference_sample_files]
