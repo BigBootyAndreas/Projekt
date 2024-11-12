@@ -5,6 +5,19 @@ from csv_compiler import csv_compiler
 from IMU import IMU_analysis
 from segmentation_loop import segmentation_analysis
 
+# Variables
+###################################################
+
+
+
+# Segmentation:
+sample_rate = 16000 #Hz
+window_samples = 5 # Seconds
+step_size = 1 # seconds
+
+
+###################################################
+
 # Predefined paths for each person
 person_paths = {
     'Ali': r'C:\\Users\\Ali\\OneDrive - Aalborg Universitet\\Desktop\\P7\\Data\\',
@@ -94,7 +107,7 @@ def acoustic(directory):
         elif analysis_choice == '2':  # Segmentation
             
             # Perform segmentation analysis
-            segmentation_analysis(subdir_path)
+            segmentation_analysis(subdir_path,window_samples, step_size, sample_rate)
 
         else:
             print("Invalid selection. Please restart and choose '1' or '2'.")

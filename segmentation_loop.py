@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 
-def segmentation_analysis(input_dir):
+def segmentation_analysis(input_dir, window, step_size, rate_hz):
 
     # Define paths
     sample_dir = 'samples\\'
@@ -29,9 +29,9 @@ def segmentation_analysis(input_dir):
     amplitude_variance_tolerance = 0.0002
 
     # Sampling parameters
-    sample_rate = 16000  # in Hz
-    window_samples = 5 * sample_rate  # 30 seconds of samples (480,000 samples at 16kHz)
-    step_samples = 1 * sample_rate  # step by 5 seconds (80,000 samples at 16kHz)
+    sample_rate = rate_hz  # in Hz
+    window_samples = window * sample_rate  # 30 seconds of samples (480,000 samples at 16kHz)
+    step_samples = step_size * sample_rate  # step by 5 seconds (80,000 samples at 16kHz)
 
     # Process each 5-minute data file
     files = sorted([f for f in os.listdir(input_dir) if os.path.isfile(os.path.join(input_dir, f)) and f.endswith(".csv")])
