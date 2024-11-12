@@ -1,12 +1,7 @@
 import os
 import pandas as pd
-import numpy as np
 
-def segmentation_analysis(input_dir, window, step_size, rate_hz):
-
-    # Define paths
-    sample_dir = 'samples\\'
-    output_dir = 'results\\'
+def segmentation_analysis(input_dir, window, step_size, rate_hz, sample_dir, output_dir):
 
     def calculate_reference_features(sample):
         amplitude_data = sample.iloc[:, 2]

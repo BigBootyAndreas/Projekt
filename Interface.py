@@ -11,10 +11,11 @@ from segmentation_loop import segmentation_analysis
 
 
 # Segmentation:
-sample_rate = 16000 #Hz
-window_samples = 5 # Seconds
-step_size = 1 # seconds
-
+sample_rate = 16000         # Data sample rate (Hz)
+window_samples = 5          # window size, should match sample size (s)
+step_size = 1               # Incremnts between each window scan (s)
+sample_dir = 'samples\\'    # Sample directory (default: 'samples\\')
+output_dir = 'results\\'    # Output directory (default: 'results\\')
 
 ###################################################
 
@@ -107,7 +108,7 @@ def acoustic(directory):
         elif analysis_choice == '2':  # Segmentation
             
             # Perform segmentation analysis
-            segmentation_analysis(subdir_path,window_samples, step_size, sample_rate)
+            segmentation_analysis(subdir_path,window_samples, step_size, sample_rate, sample_dir, output_dir)
 
         else:
             print("Invalid selection. Please restart and choose '1' or '2'.")
