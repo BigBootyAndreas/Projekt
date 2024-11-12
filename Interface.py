@@ -84,7 +84,7 @@ def acoustic(directory):
             print("Please respond with 'yes' or 'no'.")
 
         print("Choose which analysis you want to conduct")
-        analysis_choice = input("Enter '1' for FFT analysis or '2' for segmentation analysis: ")
+        analysis_choice = input("Enter '1' for FFT analysis or '2' for segment analysis: ")
 
         if analysis_choice == '1':  # FFT
 

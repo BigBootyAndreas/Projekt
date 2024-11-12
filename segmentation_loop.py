@@ -2,18 +2,18 @@ import os
 import pandas as pd
 import numpy as np
 
-def calculate_reference_features(sample):
-    amplitude_data = sample.iloc[:, 2]
-    return {
-        "mean_amplitude": amplitude_data.mean(),
-        "amplitude_variance": amplitude_data.var(),
-    }
-
 def segmentation_analysis(input_dir):
 
     # Define paths
     sample_dir = 'samples'
     output_dir = 'results'
+
+    def calculate_reference_features(sample):
+        amplitude_data = sample.iloc[:, 2]
+        return {
+            "mean_amplitude": amplitude_data.mean(),
+            "amplitude_variance": amplitude_data.var(),
+        }
 
     # Reference sample files
     reference_sample_files = [f for f in os.listdir(input_dir) if "sample" in f and f.endswith(".csv")]
@@ -34,7 +34,7 @@ def segmentation_analysis(input_dir):
     step_samples = 1 * sample_rate  # step by 5 seconds (80,000 samples at 16kHz)
 
     # Process each 5-minute data file
-    files = sorted([f for f in os.listdir(input_dir) if os.path.isfile(os.path.join(input_dir, f))])
+    files = sorted([f for f in os.listdir(input_dir) if os.path.isfile(os.path.join(input_dir, f)) and f.endswith(".csv")])
 
     for file_name in files:
         print(f"Processing file: {file_name}")
