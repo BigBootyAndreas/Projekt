@@ -3,6 +3,7 @@ from AnalysisAcoustic import perform_fft_analysis  # import
 from npz_cleaner import npz_rm
 from csv_compiler import csv_compiler
 from IMU import IMU_analysis
+from segmentation_loop import segmentation_analysis
 
 # Predefined paths for each person
 person_paths = {
@@ -82,8 +83,21 @@ def acoustic(directory):
         else:
             print("Please respond with 'yes' or 'no'.")
 
-        # Perform the FFT analysis on the selected subdirectory
-        perform_fft_analysis(subdir_path)
+        print("Choose which analysis you want to conduct")
+        analysis_choice = input("Enter '1' for FFT analysis or '2' for segmentation analysis: ")
+
+        if analysis_choice == '1':  # FFT
+
+            # Perform the FFT analysis on the selected subdirectory
+            perform_fft_analysis(subdir_path)
+
+        elif analysis_choice == '2':  # Segmentation
+            
+            # Perform segmentation analysis
+            segmentation_analysis(subdir_path)
+
+        else:
+            print("Invalid selection. Please restart and choose '1' or '2'.")
     else:
         print("Invalid selection. Please restart and choose a valid subfolder.")
 
