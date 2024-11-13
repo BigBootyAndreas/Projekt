@@ -4,6 +4,7 @@ from npz_cleaner import npz_rm
 from csv_compiler import csv_compiler
 from IMU import IMU_analysis
 from IMU import plot_psd_data
+from IMU import plot_unprocessed_data
 from segmentation_loop import segmentation_analysis
 
 # Variables
@@ -77,7 +78,7 @@ def IMU(directory):
                 k += 1
         else:
             print("Invalid selection. Please choose a valid file number.")
-        
+      
 
 
     # Create file paths based on user choices
@@ -87,10 +88,17 @@ def IMU(directory):
         full_path = os.path.join(imu_directory, selected_file)
         file_path.append(full_path)
         print(f"Processing file: {selected_file}")
-
-    # Call the IMU analysis function with the selected file paths
-    IMU_analysis([], file_path, file_choice)
-
+    imu_choise=[]
+    while True:
+        imu_choise=input ("Enter '1' for Unprocessed data or '2' for Processed data:")
+        if imu_choise == '1':
+            print("Unprocessed data is being plotted")
+            IMU_analysis(file_path,file_choice,'unprocessed')
+            break
+        elif imu_choise=='2':
+            print("Processed data is being plotted")
+            IMU_analysis(file_path,file_choice,'psd')
+            break
 
 
 

@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 # Function for IMU csv reader
-def IMU_analysis(subdirs, file_path, file_choice, plot_type='psd'):
+def IMU_analysis(file_path, file_choice, plot_type):
     # Initialize lists to store data for each file
     all_x_values = []
     all_y_values = []
@@ -77,6 +77,7 @@ def wavelet_transform(data, wavelet='db4', level=4):
 
 # Function to plot Power Spectral Density (PSD) for each axis after wavelet processing
 def plot_psd_data(file_choices, all_time_values, all_x_values, all_y_values, all_z_values):
+
     plt.figure(figsize=(14, 12))  # Create a figure large enough for 3 subplots
 
     # Calculate the sampling frequency from the first file (assuming all files have the same time spacing)
