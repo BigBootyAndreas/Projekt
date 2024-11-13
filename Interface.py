@@ -79,8 +79,6 @@ def IMU(directory):
         else:
             print("Invalid selection. Please choose a valid file number.")
       
-
-
     # Create file paths based on user choices
     file_path = []
     for i in range(len(file_choice)):
