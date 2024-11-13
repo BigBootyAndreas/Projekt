@@ -63,16 +63,16 @@ def IMU(directory):
             if 0 <= choice < len(imu_files):
                 if choice in file_choice:
                     print("File already seleceted")
-                    if str(input("Are you done? (y/n)")).strip().upper() == "yes":
+                    if input("Are you done? (y/n)").lower() in yes:
                         break
                 else: 
                     file_choice.append(choice)
-                    if str(input("Are you done? (y/n)")).strip().upper() == "yes":
+                    if input("Are you done? (y/n)").lower() in yes:
                         break
         elif k == 0:
             if 0 <= choice < len(imu_files):
                 file_choice.append(choice)
-                if str(input("Are you done? (y/n)")).strip().upper() == "yes":
+                if input("Are you done? (y/n)").lower() in yes:
                     break
                 k += 1
         else:
