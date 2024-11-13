@@ -25,6 +25,9 @@ def IMU_analysis(subdirs, file_path, file_choice, plot_type='psd'):
 
             # Check if the CSV has enough columns to process
             if len(df.columns) >= 5:
+                # Get the starting epoch time for normalization (relative time)
+                start_epoch = float(df.iloc[0, 4]) / 1000  # Convert to seconds
+                
                 # Iterate over each row in the DataFrame
                 for _, row in df.iterrows():
                     epoch_value = row.iloc[4]  # Use .iloc for position-based access
@@ -32,9 +35,11 @@ def IMU_analysis(subdirs, file_path, file_choice, plot_type='psd'):
                     try:
                         # Convert epoch to seconds by dividing by 1000
                         epoch_in_seconds = float(epoch_value) / 1000
+                        # Normalize epoch time to start from 0
+                        relative_time = epoch_in_seconds - start_epoch
 
                         # Collect data for plotting
-                        time_values_temp.append(epoch_in_seconds)  # Make sure this is a list
+                        time_values_temp.append(relative_time)  # Use relative time
                         x_values_temp.append(float(row.iloc[1]))  # Column 2 (X-axis data)
                         y_values_temp.append(float(row.iloc[2]))  # Column 3 (Y-axis data)
                         z_values_temp.append(float(row.iloc[3]))  # Column 4 (Z-axis data)
@@ -109,7 +114,6 @@ def plot_psd_data(file_choices, all_time_values, all_x_values, all_y_values, all
 
     plt.tight_layout()  # Adjusts spacing to prevent overlap between subplots
     plt.show()
-
 
 def plot_unprocessed_data(file_choice, time_values, x_values, y_values, z_values):
     plt.figure(figsize=(14, 8))
