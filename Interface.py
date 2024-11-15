@@ -5,6 +5,7 @@ from csv_compiler import csv_compiler
 from IMU import IMU_analysis
 from IMU import plot_psd_data
 from IMU import plot_unprocessed_data
+from IMU import plot_denoised
 from segmentation_loop import segmentation_analysis
 
 # Variables
@@ -88,7 +89,7 @@ def IMU(directory):
         print(f"Processing file: {selected_file}")
     imu_choise=[]
     while True:
-        imu_choise=input ("Enter '1' for Unprocessed data or '2' for Processed data:")
+        imu_choise=input ("Enter '1' for Unprocessed data or '2' for Processed data or '3' for denoised data:")
         if imu_choise == '1':
             print("Unprocessed data is being plotted")
             IMU_analysis(file_path,file_choice,'unprocessed')
@@ -97,7 +98,10 @@ def IMU(directory):
             print("Processed data is being plotted")
             IMU_analysis(file_path,file_choice,'psd')
             break
-
+        elif imu_choise=='3':
+            print("denoised data is being plotted")
+            IMU_analysis(file_path,file_choice,'denoised')
+            break
 
 
 def acoustic(directory):

@@ -37,7 +37,7 @@ def IMU_analysis(file_path, file_choice, plot_type):
                         epoch_in_seconds = float(epoch_value) / 1000
                         # Normalize epoch time to start from 0
                         relative_time = epoch_in_seconds - start_epoch
-
+                        #print(relative_time)
                         # Collect data for plotting
                         time_values_temp.append(relative_time)  # Use relative time
                         x_values_temp.append(float(row.iloc[1]))  # Column 2 (X-axis data)
@@ -63,9 +63,11 @@ def IMU_analysis(file_path, file_choice, plot_type):
         plot_unprocessed_data(file_choice, all_time_values, all_x_values, all_y_values, all_z_values)
     elif plot_type == 'psd':
         plot_psd_data(file_choice, all_time_values, all_x_values, all_y_values, all_z_values)
+    elif plot_type== 'denoised':
+        plot_denoised(file_choice, all_time_values,all_x_values,all_y_values,all_z_values)
 
 # Function to perform wavelet transform and return processed data
-def wavelet_transform(data, wavelet='db4', level=4):
+def wavelet_transform(data, wavelet='db20', level=4):
     # Perform Discrete Wavelet Transform (DWT) to filter the data
     coeffs = pywt.wavedec(data, wavelet, level=level)
     
@@ -79,7 +81,7 @@ def wavelet_transform(data, wavelet='db4', level=4):
 def plot_psd_data(file_choices, all_time_values, all_x_values, all_y_values, all_z_values):
 
     plt.figure(figsize=(14, 12))  # Create a figure large enough for 3 subplots
-
+    
     # Calculate the sampling frequency from the first file (assuming all files have the same time spacing)
     sampling_freq = 1 / (all_time_values[0][1] - all_time_values[0][0])  # this should work now
 
@@ -135,6 +137,34 @@ def plot_unprocessed_data(file_choice, time_values, x_values, y_values, z_values
         plt.subplot(3, 1, 3)
         plt.plot(time_values[i], z_values[i], label=f'Z Values - {file_name}', color='b')
         plt.title('Z vs. Time (Unprocessed)')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Z')
+
+    plt.tight_layout()  # Adjusts spacing to prevent overlap
+    plt.show()
+
+def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_values):
+    plt.figure(figsize=(14, 8))
+
+    for i, file_name in enumerate(file_choice):
+        processed_x = wavelet_transform(all_x_values[i])
+        plt.subplot(3, 1, 1)
+        plt.plot(time_values[i], processed_x, label=f'X Values - {file_name}', color='r')
+        plt.title('X vs. Time (denoising)')
+        plt.xlabel('Time (s)')
+        plt.ylabel('X')
+
+        plt.subplot(3, 1, 2)
+        processed_y = wavelet_transform(all_y_values[i])
+        plt.plot(time_values[i], processed_y, label=f'Y Values - {file_name}', color='g')
+        plt.title('Y vs. Time (donoising)')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Y')
+
+        plt.subplot(3, 1, 3)
+        processed_z = wavelet_transform(all_z_values[i])
+        plt.plot(time_values[i], processed_z, label=f'Z Values - {file_name}', color='b')
+        plt.title('Z vs. Time (denoising )')
         plt.xlabel('Time (s)')
         plt.ylabel('Z')
 
