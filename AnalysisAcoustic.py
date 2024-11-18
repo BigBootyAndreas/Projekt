@@ -3,8 +3,24 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import glob
+import pywt
 
-# Function to plot raw mean data (before FFT)
+# Function to denoise data using wavelet transform
+def wavelet_denoise(data, wavelet='db1', level=5, thresholding='soft'):
+    # Perform wavelet decomposition
+    coeffs = pywt.wavedec(data, wavelet, level=level)
+    
+    # Apply thresholding to detail coefficients
+    threshold = np.median(np.abs(coeffs[-1])) / 0.6745 * np.sqrt(2 * np.log(len(data)))
+    coeffs_denoised = [coeffs[0]] + [pywt.threshold(c, threshold, mode=thresholding) for c in coeffs[1:]]
+    
+    # Reconstruct the signal from the denoised coefficients
+    denoised_data = pywt.waverec(coeffs_denoised, wavelet)
+    
+    # Ensure the reconstructed data length matches the original
+    return denoised_data[:len(data)]
+
+# Function to plot raw data (after denoising)
 def plot_raw_data(directory):
     # Get all CSV files in the directory
     csv_files = glob.glob(os.path.join(directory, '*.csv'))
@@ -26,9 +42,12 @@ def plot_raw_data(directory):
             print(f"Warning: {file_path} contains no data in Column 2 or 3.")
             continue
         
+        # Denoise the data using wavelet transform
+        col3_denoised = wavelet_denoise(col3)
+
         # Append to the lists
         time_all.append(time)
-        col3_all.append(col3)
+        col3_all.append(col3_denoised)
 
     if not col3_all:
         print("No valid data found in Column 2 or 3 of any CSV file.")
@@ -43,10 +62,10 @@ def plot_raw_data(directory):
     mean_col3 = np.mean(col3_all, axis=0)
     mean_time = np.mean(time_all, axis=0)  # Average time axis
 
-    # Plot the raw mean data
+    # Plot the denoised mean data
     plt.figure(figsize=(12, 6))
-    plt.plot(mean_time, mean_col3, label='Acoustioc data)', color='b')
-    plt.title('Raw Data: Amplitude vs Time')
+    plt.plot(mean_time, mean_col3, label='Denoised Acoustic Data', color='b')
+    plt.title('Denoised Data: Amplitude vs Time')
     plt.xlabel('Time (s)')
     plt.ylabel('Amplitude')
     plt.grid(True)
