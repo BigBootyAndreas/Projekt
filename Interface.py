@@ -127,14 +127,27 @@ def acoustic(directory):
             subdir_path = os.path.join(directory, selected_subdir)
             print(f"You selected {selected_subdir}. Full path: {subdir_path}")
 
+            convert = input("Would you like to convert the files? (y/n)").lower()
+            if convert in yes:
+                csv_compiler(subdir_path)
+                npz_rm(subdir_path)
+                print("Files converted to CSV and npz files deleted.")
+            elif convert in no:
+                print("Files already CSV.")
+            else:
+                print("Please respond with 'yes' or 'no'.")
+
             print("Choose which analysis you want to conduct")
-            analysis_choice = input("1. FFT analysis\n2. Raw data analysis\n")
+            analysis_choice = input("1. FFT analysis\n2. Raw data analysis\n3. Segmentation analysis\n")
 
             if analysis_choice == '1':  # FFT analysis
                 perform_fft_analysis(subdir_path)
                 break
             elif analysis_choice == '2':  # Raw data analysis
                 plot_raw_data(subdir_path)
+                break
+            elif analysis_choice == '3':  # Raw data analysis
+                segmentation_analysis(subdir_path,window_samples, step_size, sample_rate, sample_dir, output_dir, amp_tol, amp_var_tol)
                 break
             else:
                 print("Invalid selection. Please choose '1' or '2'.")
@@ -143,7 +156,7 @@ def acoustic(directory):
             print("Invalid selection. Please choose a valid subfolder.")
         
         run_again = input("Run again? (y/n): ").strip().lower()
-        if run_again not in {'yes', 'y'}:
+        if run_again not in yes:
             print("Exiting the program.")
             break
 

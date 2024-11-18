@@ -45,8 +45,8 @@ def plot_raw_data(directory):
 
     # Plot the raw mean data
     plt.figure(figsize=(12, 6))
-    plt.plot(mean_time, mean_col3, label='Mean Column 3 (Raw Data)', color='b')
-    plt.title('Raw Data: Mean Column 3 vs Time')
+    plt.plot(mean_time, mean_col3, label='Acoustioc data)', color='b')
+    plt.title('Raw Data: Amplitude vs Time')
     plt.xlabel('Time (s)')
     plt.ylabel('Amplitude')
     plt.grid(True)
