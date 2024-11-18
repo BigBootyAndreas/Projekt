@@ -4,18 +4,14 @@ from AnalysisAcoustic import plot_raw_data
 from npz_cleaner import npz_rm
 from csv_compiler import csv_compiler
 from IMU import IMU_analysis
-from IMU import plot_psd_data
-from IMU import plot_unprocessed_data
-from IMU import plot_denoised
 from segmentation_loop import segmentation_analysis
 
 # Variables
 ###################################################
 
-
-#Interface inputs
-yes = {'yes', 'y', 'ye', ''}
-no = {'no', 'n'}
+# IMU
+wavelet_type = 'db20'
+level = 4
 
 # Segmentation:
 sample_rate = 16000         # Data sample rate (Hz)
@@ -25,6 +21,10 @@ sample_dir = 'samples\\'    # Sample directory (default: 'samples\\')
 output_dir = 'results\\'    # Output directory (default: 'results\\')
 amp_tol = 0.0002            # Amplitude tolerance (default: 0.0002)
 amp_var_tol = 0.0002        # Amplitude variance tolerance (default: 0.0002)
+
+# Interface inputs
+yes = {'yes', 'y', 'ye', ''}
+no = {'no', 'n'}
 
 ###################################################
 
@@ -37,7 +37,7 @@ person_paths = {
     'Zahid': 'C:\\Users\\Person5\\Downloads\\data\\',
 }
 
-def IMU(directory):
+def IMU(directory, wavelet_type, level):
     print("Welcome to the IMU analysis tool.")
     
     while True:
@@ -99,15 +99,15 @@ def IMU(directory):
         imu_choise=input ("Enter '1' for Unprocessed data or '2' for Processed data or '3' for denoised data:")
         if imu_choise == '1':
             print("Unprocessed data is being plotted")
-            IMU_analysis(file_path,file_choice,'unprocessed')
+            IMU_analysis(file_path,file_choice,'unprocessed', wavelet_type, level)
             
         elif imu_choise=='2':
             print("Processed data is being plotted")
-            IMU_analysis(file_path,file_choice,'psd')
+            IMU_analysis(file_path,file_choice,'psd', wavelet_type, level)
             
         elif imu_choise=='3':
             print("denoised data is being plotted")
-            IMU_analysis(file_path,file_choice,'denoised')
+            IMU_analysis(file_path,file_choice,'denoised', wavelet_type, level)
         
         run_again = input("Run again? (y/n): ").strip().lower()
         if run_again not in yes:
@@ -190,7 +190,7 @@ def main():
             acoustic_directory = os.path.join(base_directory, 'Acoustic')
             acoustic(acoustic_directory)
         elif analysis_choice == '2':  # IMU analysis
-            IMU(base_directory)
+            IMU(base_directory, wavelet_type, level)
         else:
             print("Invalid selection. Please restart and choose '1' or '2'.")
     else:
