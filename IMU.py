@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import pywt
 import numpy as np
 import pandas as pd
+from itertools import cycle
 
 # Function for IMU csv reader
 def IMU_analysis(file_path, file_choice, plot_type):
@@ -146,24 +147,34 @@ def plot_unprocessed_data(file_choice, time_values, x_values, y_values, z_values
 def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_values):
     plt.figure(figsize=(14, 8))
 
+    colors = cycle(['red', 'blue', 'green', 'lawngreen', 'magenta', 'orange'])
+
     for i, file_name in enumerate(file_choice):
+
+        # Get the next color from the cycle
+        color = next(colors)
+
         processed_x = wavelet_transform(all_x_values[i])
         plt.subplot(3, 1, 1)
-        plt.plot(time_values[i], processed_x, label=f'X Values - {file_name}', color='r')
+        plt.plot(time_values[i], processed_x, label=f'X Values - {file_name}', color=color)
         plt.title('X vs. Time (denoising)')
         plt.xlabel('Time (s)')
         plt.ylabel('X')
 
+        color = next(colors)
+
         plt.subplot(3, 1, 2)
         processed_y = wavelet_transform(all_y_values[i])
-        plt.plot(time_values[i], processed_y, label=f'Y Values - {file_name}', color='g')
+        plt.plot(time_values[i], processed_y, label=f'Y Values - {file_name}', color=color)
         plt.title('Y vs. Time (donoising)')
         plt.xlabel('Time (s)')
         plt.ylabel('Y')
 
+        color = next(colors)
+
         plt.subplot(3, 1, 3)
         processed_z = wavelet_transform(all_z_values[i])
-        plt.plot(time_values[i], processed_z, label=f'Z Values - {file_name}', color='b')
+        plt.plot(time_values[i], processed_z, label=f'Z Values - {file_name}', color=color)
         plt.title('Z vs. Time (denoising )')
         plt.xlabel('Time (s)')
         plt.ylabel('Z')
