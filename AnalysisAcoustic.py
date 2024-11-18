@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import os
 import glob
 
+
+
 def perform_fft_analysis(directory):
     # Get all CSV files in the directory
     csv_files = glob.glob(os.path.join(directory, '*.csv'))
