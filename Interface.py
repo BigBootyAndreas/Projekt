@@ -40,59 +40,62 @@ person_paths = {
 def IMU(directory):
     print("Welcome to the IMU analysis tool.")
     
-    # Navigate to the 'IMU' subdirectory
-    imu_directory = os.path.join(directory, 'IMU')
-    if not os.path.exists(imu_directory):
-        print("IMU directory not found in the specified path.")
-        return
-
-    # List all CSV files in the IMU directory
-    imu_files = [f for f in os.listdir(imu_directory) if f.endswith('.csv')]
-
-    if not imu_files:
-        print("No CSV files found in the IMU directory.")
-        return
-
-    print("Files available for IMU analysis:")
-    for idx, file in enumerate(imu_files):
-        print(f"{idx + 1}. {file}")
-
-    # Let the user select a file
-    file_choice = []
-    k = 0
     while True:
+
+        # Navigate to the 'IMU' subdirectory
+        imu_directory = os.path.join(directory, 'IMU')
+        if not os.path.exists(imu_directory):
+            print("IMU directory not found in the specified path.")
+            return
+
+        # List all CSV files in the IMU directory
+        imu_files = [f for f in os.listdir(imu_directory) if f.endswith('.csv')]
+
+        if not imu_files:
+            print("No CSV files found in the IMU directory.")
+            return
+
+        print("Files available for IMU analysis:")
+        for idx, file in enumerate(imu_files):
+            print(f"{idx + 1}. {file}")
+
+        # Let the user select a file
+        file_choice = []
+        k = 0
+
         choice = int(input("Enter the number corresponding to the file: ")) - 1
         if k >= 1:
             if 0 <= choice < len(imu_files):
                 if choice in file_choice:
                     print("File already seleceted")
-                    if input("Are you done? (y/n)").lower() in yes:
-                        break
+                    if input("Are you done? (y/n)").lower() in no:
+                        continue
+                    
                 else: 
                     file_choice.append(choice)
-                    if input("Are you done? (y/n)").lower() in yes:
-                        break
+                    if input("Are you done? (y/n)").lower() in no:
+                        continue
+                    
         elif k == 0:
             if 0 <= choice < len(imu_files):
                 file_choice.append(choice)
-                if input("Are you done? (y/n)").lower() in yes:
-                    break
+                if input("Are you done? (y/n)").lower() in no:
+                    continue
                 k += 1
         else:
             print("Invalid selection. Please choose a valid file number.")
       
-    # Create file paths based on user choices
-    file_path = []
-    
-    for i in range(len(file_choice)):
-        selected_file = imu_files[file_choice[i]]
-        full_path = os.path.join(imu_directory, selected_file)
-        file_path.append(full_path)
-        print(f"Processing file: {selected_file}")
+        # Create file paths based on user choices
+        file_path = []
 
-    imu_choise=[]
+        for i in range(len(file_choice)):
+            selected_file = imu_files[file_choice[i]]
+            full_path = os.path.join(imu_directory, selected_file)
+            file_path.append(full_path)
+            print(f"Processing file: {selected_file}")
 
-    while True:
+        imu_choise=[]
+
         imu_choise=input ("Enter '1' for Unprocessed data or '2' for Processed data or '3' for denoised data:")
         if imu_choise == '1':
             print("Unprocessed data is being plotted")
