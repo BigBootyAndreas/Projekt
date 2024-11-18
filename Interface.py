@@ -83,25 +83,32 @@ def IMU(directory):
       
     # Create file paths based on user choices
     file_path = []
+    
     for i in range(len(file_choice)):
         selected_file = imu_files[file_choice[i]]
         full_path = os.path.join(imu_directory, selected_file)
         file_path.append(full_path)
         print(f"Processing file: {selected_file}")
+
     imu_choise=[]
+
     while True:
         imu_choise=input ("Enter '1' for Unprocessed data or '2' for Processed data or '3' for denoised data:")
         if imu_choise == '1':
             print("Unprocessed data is being plotted")
             IMU_analysis(file_path,file_choice,'unprocessed')
-            break
+            
         elif imu_choise=='2':
             print("Processed data is being plotted")
             IMU_analysis(file_path,file_choice,'psd')
-            break
+            
         elif imu_choise=='3':
             print("denoised data is being plotted")
             IMU_analysis(file_path,file_choice,'denoised')
+        
+        run_again = input("Run again? (y/n): ").strip().lower()
+        if run_again not in yes:
+            print("Exiting the program.")
             break
 
 
