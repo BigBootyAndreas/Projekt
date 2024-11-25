@@ -6,6 +6,7 @@ from csv_compiler import csv_compiler
 from IMU import IMU_analysis
 from segmentation_loop import segmentation_analysis
 from linearregression import plot_scatter
+from RMS import plot_rms
 
 # Variables
 ###################################################
@@ -149,7 +150,7 @@ def acoustic(directory):
                 print("Please respond with 'yes' or 'no'.")
 
             print("Choose which analysis you want to conduct")
-            analysis_choice = input("1. FFT analysis\n2. Raw data analysis\n3. Segmentation analysis\n4. Linear regression\nInput:")
+            analysis_choice = input("1. FFT analysis\n2. Raw data analysis\n3. Segmentation analysis\n4. Linear regression\n5. RMS plot\nInput:")
 
             if analysis_choice == '1':  # FFT analysis
                 perform_fft_analysis(subdir_path)
@@ -162,6 +163,9 @@ def acoustic(directory):
 
             elif analysis_choice=='4':    # linear regression
                 plot_scatter(subdir_path)  
+                
+            elif analysis_choice=='5':    # linear regression
+                plot_rms(subdir_path)  
                 
             else:
                 print("Invalid selection. Please choose '1' or '2'.")
