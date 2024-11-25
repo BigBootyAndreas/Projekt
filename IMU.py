@@ -6,7 +6,7 @@ import pandas as pd
 from itertools import cycle
 
 # Function for IMU csv reader
-def IMU_analysis(file_path, file_choice, plot_type):
+def IMU_analysis(file_path, file_choice, plot_type, wavelet_type, level):
     # Initialize lists to store data for each file
     all_x_values = []
     all_y_values = []
@@ -63,12 +63,12 @@ def IMU_analysis(file_path, file_choice, plot_type):
     if plot_type == 'unprocessed':
         plot_unprocessed_data(file_choice, all_time_values, all_x_values, all_y_values, all_z_values)
     elif plot_type == 'psd':
-        plot_psd_data(file_choice, all_time_values, all_x_values, all_y_values, all_z_values)
+        plot_psd_data(file_choice, all_time_values, all_x_values, all_y_values, all_z_values, wavelet_type, level)
     elif plot_type== 'denoised':
-        plot_denoised(file_choice, all_time_values,all_x_values,all_y_values,all_z_values)
+        plot_denoised(file_choice, all_time_values,all_x_values,all_y_values,all_z_values, wavelet_type, level)
 
 # Function to perform wavelet transform and return processed data
-def wavelet_transform(data, wavelet='db20', level=4):
+def wavelet_transform(data, wavelet, level):
     # Perform Discrete Wavelet Transform (DWT) to filter the data
     coeffs = pywt.wavedec(data, wavelet, level=level)
     
@@ -79,7 +79,7 @@ def wavelet_transform(data, wavelet='db20', level=4):
     return reconstructed_data[:len(data)]
 
 # Function to plot Power Spectral Density (PSD) for each axis after wavelet processing
-def plot_psd_data(file_choices, all_time_values, all_x_values, all_y_values, all_z_values):
+def plot_psd_data(file_choices, all_time_values, all_x_values, all_y_values, all_z_values, wavelet_type, level):
 
     plt.figure(figsize=(14, 12))  # Create a figure large enough for 3 subplots
     
@@ -89,7 +89,7 @@ def plot_psd_data(file_choices, all_time_values, all_x_values, all_y_values, all
     # Subplot for X data
     plt.subplot(3, 1, 1)
     for i in range(len(file_choices)):  # Loop over each file's data
-        processed_x = wavelet_transform(all_x_values[i])  # Process the X data using wavelet transform
+        processed_x = wavelet_transform(all_x_values[i], wavelet_type, level)  # Process the X data using wavelet transform
         plt.psd(processed_x, Fs=sampling_freq, label=f'File {file_choices[i]}')
     plt.title('Power Spectral Density (X) after Wavelet Processing')
     plt.xlabel('Frequency (Hz)')
@@ -99,7 +99,7 @@ def plot_psd_data(file_choices, all_time_values, all_x_values, all_y_values, all
     # Subplot for Y data
     plt.subplot(3, 1, 2)
     for i in range(len(file_choices)):  # Loop over each file's data
-        processed_y = wavelet_transform(all_y_values[i])  # Process the Y data using wavelet transform
+        processed_y = wavelet_transform(all_y_values[i], wavelet_type, level)  # Process the Y data using wavelet transform
         plt.psd(processed_y, Fs=sampling_freq, label=f'File {file_choices[i]}')
     plt.title('Power Spectral Density (Y) after Wavelet Processing')
     plt.xlabel('Frequency (Hz)')
@@ -109,7 +109,7 @@ def plot_psd_data(file_choices, all_time_values, all_x_values, all_y_values, all
     # Subplot for Z data
     plt.subplot(3, 1, 3)
     for i in range(len(file_choices)):  # Loop over each file's data
-        processed_z = wavelet_transform(all_z_values[i])  # Process the Z data using wavelet transform
+        processed_z = wavelet_transform(all_z_values[i], wavelet_type, level)  # Process the Z data using wavelet transform
         plt.psd(processed_z, Fs=sampling_freq, label=f'File {file_choices[i]}')
     plt.title('Power Spectral Density (Z) after Wavelet Processing')
     plt.xlabel('Frequency (Hz)')
@@ -144,7 +144,8 @@ def plot_unprocessed_data(file_choice, time_values, x_values, y_values, z_values
     plt.tight_layout()  # Adjusts spacing to prevent overlap
     plt.show()
 
-def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_values):
+def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_values, wavelet_type, level):
+
     plt.figure(figsize=(14, 8))
 
     colors = cycle(['red', 'blue', 'green', 'lawngreen', 'magenta', 'orange'])
@@ -154,7 +155,7 @@ def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_va
         # Get the next color from the cycle
         color = next(colors)
 
-        processed_x = wavelet_transform(all_x_values[i])
+        processed_x = wavelet_transform(all_x_values[i], wavelet_type, level)
         plt.subplot(3, 1, 1)
         plt.plot(time_values[i], processed_x, label=f'X Values - {file_name}', color=color)
         plt.title('X vs. Time (denoising)')
@@ -164,7 +165,7 @@ def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_va
         color = next(colors)
 
         plt.subplot(3, 1, 2)
-        processed_y = wavelet_transform(all_y_values[i])
+        processed_y = wavelet_transform(all_y_values[i], wavelet_type, level)
         plt.plot(time_values[i], processed_y, label=f'Y Values - {file_name}', color=color)
         plt.title('Y vs. Time (donoising)')
         plt.xlabel('Time (s)')
@@ -173,7 +174,7 @@ def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_va
         color = next(colors)
 
         plt.subplot(3, 1, 3)
-        processed_z = wavelet_transform(all_z_values[i])
+        processed_z = wavelet_transform(all_z_values[i], wavelet_type, level)
         plt.plot(time_values[i], processed_z, label=f'Z Values - {file_name}', color=color)
         plt.title('Z vs. Time (denoising )')
         plt.xlabel('Time (s)')
