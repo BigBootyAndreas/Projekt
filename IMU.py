@@ -125,9 +125,6 @@ def plot_psd_data(file_choices, all_time_values, all_x_values, all_y_values, all
     plt.tight_layout()  # Adjusts spacing to prevent overlap between subplots
     plt.show()
 
-    plt.tight_layout()  # Adjusts spacing to prevent overlap between subplots
-    plt.show()
-
 def plot_unprocessed_data(file_choice, time_values, x_values, y_values, z_values, chosen_colors):
     
     plt.figure(figsize=(14, 8))
