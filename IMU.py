@@ -6,6 +6,7 @@ import pandas as pd
 from itertools import cycle
 from scipy.signal import find_peaks
 
+colors = cycle(['red', 'blue', 'green', 'lawngreen', 'magenta', 'orange'])
 
 # Function for IMU csv reader
 def IMU_analysis(file_path, file_choice, plot_type, wavelet_type, level):
@@ -128,20 +129,27 @@ def plot_unprocessed_data(file_choice, time_values, x_values, y_values, z_values
     plt.figure(figsize=(14, 8))
 
     for i, file_name in enumerate(file_choice):
+
+        color = next(colors)
+
         plt.subplot(3, 1, 1)
-        plt.plot(time_values[i], x_values[i], label=f'X Values - {file_name}', color='r')
+        plt.plot(time_values[i], x_values[i], label=f'X Values - {file_name}', color=color)
         plt.title('X vs. Time (Unprocessed)')
         plt.xlabel('Time (s)')
         plt.ylabel('X')
 
+        color = next(colors)
+
         plt.subplot(3, 1, 2)
-        plt.plot(time_values[i], y_values[i], label=f'Y Values - {file_name}', color='g')
+        plt.plot(time_values[i], y_values[i], label=f'Y Values - {file_name}', color=color)
         plt.title('Y vs. Time (Unprocessed)')
         plt.xlabel('Time (s)')
         plt.ylabel('Y')
 
+        color = next(colors)
+
         plt.subplot(3, 1, 3)
-        plt.plot(time_values[i], z_values[i], label=f'Z Values - {file_name}', color='b')
+        plt.plot(time_values[i], z_values[i], label=f'Z Values - {file_name}', color=color)
         plt.title('Z vs. Time (Unprocessed)')
         plt.xlabel('Time (s)')
         plt.ylabel('Z')
@@ -152,8 +160,6 @@ def plot_unprocessed_data(file_choice, time_values, x_values, y_values, z_values
 def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_values, wavelet_type, level):
 
     plt.figure(figsize=(14, 8))
-
-    colors = cycle(['red', 'blue', 'green', 'lawngreen', 'magenta', 'orange'])
 
     for i, file_name in enumerate(file_choice):
 
@@ -190,6 +196,7 @@ def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_va
 
 
 def peak_find(file_choice, all_time_values, all_x_values, all_y_values, all_z_values, wavelet_type, level):
+
     # Flatten all data into 1D NumPy arrays
     all_time_values_f = np.concatenate(all_time_values)  # Flatten the nested time lists
     all_x_values_f = np.concatenate(all_x_values)
@@ -209,27 +216,33 @@ def peak_find(file_choice, all_time_values, all_x_values, all_y_values, all_z_va
     # Plotting
     plt.figure(figsize=(10, 8))
 
+    color = next(colors)
+
     # X-axis
     plt.subplot(3, 1, 1)
-    plt.plot(all_time_values_f, all_x_values_f, label='X-axis')
+    plt.plot(all_time_values_f, all_x_values_f, label='X-axis', color=color)
     plt.plot(peak_times_x, all_x_values_f[peak_indices_x], 'rx', label='Peaks')
     plt.legend()
     plt.title('Peaks in X-axis Data')
     plt.xlabel('Time (s)')
     plt.ylabel('Amplitude')
 
+    color = next(colors)
+
     # Y-axis
     plt.subplot(3, 1, 2)
-    plt.plot(all_time_values_f, all_y_values_f, label='Y-axis')
+    plt.plot(all_time_values_f, all_y_values_f, label='Y-axis', color=color)
     plt.plot(peak_times_y, all_y_values_f[peak_indices_y], 'rx', label='Peaks')
     plt.legend()
     plt.title('Peaks in Y-axis Data')
     plt.xlabel('Time (s)')
     plt.ylabel('Amplitude')
 
+    color = next(colors)
+
     # Z-axis
     plt.subplot(3, 1, 3)
-    plt.plot(all_time_values_f, all_z_values_f, label='Z-axis')
+    plt.plot(all_time_values_f, all_z_values_f, label='Z-axis', color=color)
     plt.plot(peak_times_z, all_z_values_f[peak_indices_z], 'rx', label='Peaks')
     plt.legend()
     plt.title('Peaks in Z-axis Data')
