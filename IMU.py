@@ -89,35 +89,43 @@ def plot_psd_data(file_choices, all_time_values, all_x_values, all_y_values, all
     # Calculate the sampling frequency from the first file (assuming all files have the same time spacing)
     sampling_freq = 1 / (all_time_values[0][1] - all_time_values[0][0])  # this should work now
 
-    # Subplot for X data
-    plt.subplot(3, 1, 1)
-    for i in range(len(file_choices)):  # Loop over each file's data
-        processed_x = wavelet_transform(all_x_values[i], wavelet_type, level)  # Process the X data using wavelet transform
-        plt.psd(processed_x, Fs=sampling_freq, label=f'File {file_choices[i]}')
-    plt.title('Power Spectral Density (X) after Wavelet Processing')
-    plt.xlabel('Frequency (Hz)')
-    plt.ylabel('Power/Frequency (dB/Hz)')
-    plt.legend()
+    for i, file_name in enumerate(file_choices):
 
-    # Subplot for Y data
-    plt.subplot(3, 1, 2)
-    for i in range(len(file_choices)):  # Loop over each file's data
-        processed_y = wavelet_transform(all_y_values[i], wavelet_type, level)  # Process the Y data using wavelet transform
-        plt.psd(processed_y, Fs=sampling_freq, label=f'File {file_choices[i]}')
-    plt.title('Power Spectral Density (Y) after Wavelet Processing')
-    plt.xlabel('Frequency (Hz)')
-    plt.ylabel('Power/Frequency (dB/Hz)')
-    plt.legend()
+        color = next(chosen_colors)
 
-    # Subplot for Z data
-    plt.subplot(3, 1, 3)
-    for i in range(len(file_choices)):  # Loop over each file's data
-        processed_z = wavelet_transform(all_z_values[i], wavelet_type, level)  # Process the Z data using wavelet transform
-        plt.psd(processed_z, Fs=sampling_freq, label=f'File {file_choices[i]}')
-    plt.title('Power Spectral Density (Z) after Wavelet Processing')
-    plt.xlabel('Frequency (Hz)')
-    plt.ylabel('Power/Frequency (dB/Hz)')
-    plt.legend()
+        # Subplot for X data
+        plt.subplot(3, 1, 1)
+        for i in range(len(file_choices)):  # Loop over each file's data
+            processed_x = wavelet_transform(all_x_values[i], wavelet_type, level)  # Process the X data using wavelet transform
+            plt.psd(processed_x, Fs=sampling_freq, label=f'File {file_name}')
+        plt.title('Power Spectral Density (X) after Wavelet Processing')
+        plt.xlabel('Frequency (Hz)')
+        plt.ylabel('Power/Frequency (dB/Hz)')
+        plt.legend()
+
+        color = next(chosen_colors)
+
+        # Subplot for Y data
+        plt.subplot(3, 1, 2)
+        for i in range(len(file_choices)):  # Loop over each file's data
+            processed_y = wavelet_transform(all_y_values[i], wavelet_type, level)  # Process the Y data using wavelet transform
+            plt.psd(processed_y, Fs=sampling_freq, label=f'File {file_name}')
+        plt.title('Power Spectral Density (Y) after Wavelet Processing')
+        plt.xlabel('Frequency (Hz)')
+        plt.ylabel('Power/Frequency (dB/Hz)')
+        plt.legend()
+
+        color = next(chosen_colors)
+
+        # Subplot for Z data
+        plt.subplot(3, 1, 3)
+        for i in range(len(file_choices)):  # Loop over each file's data
+            processed_z = wavelet_transform(all_z_values[i], wavelet_type, level)  # Process the Z data using wavelet transform
+            plt.psd(processed_z, Fs=sampling_freq, label=f'File {file_name}')
+        plt.title('Power Spectral Density (Z) after Wavelet Processing')
+        plt.xlabel('Frequency (Hz)')
+        plt.ylabel('Power/Frequency (dB/Hz)')
+        plt.legend()
 
     plt.tight_layout()  # Adjusts spacing to prevent overlap between subplots
     plt.show()
