@@ -98,7 +98,7 @@ def IMU(directory, wavelet_type, level):
 
         imu_choise=[]
 
-        imu_choise=input ("Enter '1' for Unprocessed data or '2' for Processed data or '3' for denoised data:")
+        imu_choise=input ("Enter '1' for Unprocessed data or '2' for Processed data or '3' for denoised data or '4' for Peaks:")
         if imu_choise == '1':
             print("Unprocessed data is being plotted")
             IMU_analysis(file_path,file_choice,'unprocessed', wavelet_type, level)
@@ -110,6 +110,9 @@ def IMU(directory, wavelet_type, level):
         elif imu_choise=='3':
             print("denoised data is being plotted")
             IMU_analysis(file_path,file_choice,'denoised', wavelet_type, level)
+        elif imu_choise=='4':
+            print("Peaks being plotted")
+            IMU_analysis(file_path,file_choice,'Peaks',wavelet_type,level)
         
         run_again = input("Run again? (y/n): ").strip().lower()
         if run_again not in yes:

@@ -4,6 +4,8 @@ import pywt
 import numpy as np
 import pandas as pd
 from itertools import cycle
+from scipy.signal import find_peaks
+
 
 # Function for IMU csv reader
 def IMU_analysis(file_path, file_choice, plot_type, wavelet_type, level):
@@ -12,7 +14,7 @@ def IMU_analysis(file_path, file_choice, plot_type, wavelet_type, level):
     all_y_values = []
     all_z_values = []
     all_time_values = []
-
+    
     for i in range(len(file_choice)):
         # Temporary lists to store data for each file
         x_values_temp = []
@@ -66,6 +68,9 @@ def IMU_analysis(file_path, file_choice, plot_type, wavelet_type, level):
         plot_psd_data(file_choice, all_time_values, all_x_values, all_y_values, all_z_values, wavelet_type, level)
     elif plot_type== 'denoised':
         plot_denoised(file_choice, all_time_values,all_x_values,all_y_values,all_z_values, wavelet_type, level)
+    elif plot_type=='Peaks':
+        peak_find(file_choice, all_time_values, all_x_values, all_y_values ,all_z_values, wavelet_type, level)
+
 
 # Function to perform wavelet transform and return processed data
 def wavelet_transform(data, wavelet, level):
@@ -181,4 +186,55 @@ def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_va
         plt.ylabel('Z')
 
     plt.tight_layout()  # Adjusts spacing to prevent overlap
+    plt.show()
+
+
+def peak_find(file_choice, all_time_values, all_x_values, all_y_values, all_z_values, wavelet_type, level):
+    # Flatten all data into 1D NumPy arrays
+    all_time_values_f = np.concatenate(all_time_values)  # Flatten the nested time lists
+    all_x_values_f = np.concatenate(all_x_values)
+    all_y_values_f = np.concatenate(all_y_values)
+    all_z_values_f = np.concatenate(all_z_values)
+
+    # Find peaks for each axis
+    peak_indices_x, _ = find_peaks(all_x_values_f, height=2.0, distance=50, prominence=1.0)  # Adjust these values as needed
+    peak_indices_y, _ = find_peaks(all_y_values_f, height=2.0, distance=50, prominence=1.0)
+    peak_indices_z, _ = find_peaks(all_z_values_f, height=2.0, distance=50, prominence=1.0)
+
+    # Map peak indices to corresponding time values
+    peak_times_x = all_time_values_f[peak_indices_x]  # Extract peak times for X
+    peak_times_y = all_time_values_f[peak_indices_y]  # Extract peak times for Y
+    peak_times_z = all_time_values_f[peak_indices_z]  # Extract peak times for Z
+
+    # Plotting
+    plt.figure(figsize=(10, 8))
+
+    # X-axis
+    plt.subplot(3, 1, 1)
+    plt.plot(all_time_values_f, all_x_values_f, label='X-axis')
+    plt.plot(peak_times_x, all_x_values_f[peak_indices_x], 'rx', label='Peaks')
+    plt.legend()
+    plt.title('Peaks in X-axis Data')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Amplitude')
+
+    # Y-axis
+    plt.subplot(3, 1, 2)
+    plt.plot(all_time_values_f, all_y_values_f, label='Y-axis')
+    plt.plot(peak_times_y, all_y_values_f[peak_indices_y], 'rx', label='Peaks')
+    plt.legend()
+    plt.title('Peaks in Y-axis Data')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Amplitude')
+
+    # Z-axis
+    plt.subplot(3, 1, 3)
+    plt.plot(all_time_values_f, all_z_values_f, label='Z-axis')
+    plt.plot(peak_times_z, all_z_values_f[peak_indices_z], 'rx', label='Peaks')
+    plt.legend()
+    plt.title('Peaks in Z-axis Data')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Amplitude')
+
+    plt.tight_layout()
     plt.show()

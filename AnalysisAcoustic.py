@@ -119,7 +119,8 @@ def perform_fft_analysis(directory):
 
     # Compute the frequency axis
     n = len(mean_col3)
-    freq = np.fft.fftfreq(n, d=(mean_time[1] - mean_time[0]))  # Use actual time intervals
+    freq = np.fft.fftfreq(n, d=(mean_time[1] - mean_time[0]))  # Use actual time intervals'
+    
 
     # Create a figure with two subplots: one for FFT and one for the spectrogram
     fig, ax = plt.subplots(2, 1, figsize=(12, 10))
@@ -141,3 +142,5 @@ def perform_fft_analysis(directory):
     # Adjust layout for better visualization    
     plt.tight_layout()
     plt.show()
+
+    return fft_mean_col3, freq
