@@ -213,7 +213,7 @@ def peak_find(file_choice, time_values, all_x_values, all_y_values, all_z_values
             peaks, properties = find_peaks(
                 processed_data, 
                 height=None,         # Only detect peaks ≥ 2.0 in height
-                distance=100,        # At least 50 data points apart
+                distance=200,        # At least 50 data points apart
                 #prominence=1.0      # Prominence of ≥ 1.0
             )
             
