@@ -195,73 +195,44 @@ def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_va
     plt.tight_layout()  # Adjusts spacing to prevent overlap
     plt.show()
 
-def peak_find(file_choice, all_time_values, all_x_values, all_y_values, all_z_values, wavelet_type, level, chosen_colors):
-
-    # Flatten all data into 1D NumPy arrays
-    all_time_values_f = np.concatenate(all_time_values)  # Flatten the nested time lists
-    all_x_values_f = np.concatenate(all_x_values)
-    all_y_values_f = np.concatenate(all_y_values)
-    all_z_values_f = np.concatenate(all_z_values)
-
-    # Find peaks for each axis
-    peak_indices_x, _ = find_peaks(all_x_values_f, height=2.0, distance=50, prominence=1.0)
-    peak_indices_y, _ = find_peaks(all_y_values_f, height=2.0, distance=50, prominence=1.0)
-    peak_indices_z, _ = find_peaks(all_z_values_f, height=2.0, distance=50, prominence=1.0)
-
-    # Ensure peak_indices are integers
-    peak_indices_x = np.array(peak_indices_x, dtype=int)
-    peak_indices_y = np.array(peak_indices_y, dtype=int)
-    peak_indices_z = np.array(peak_indices_z, dtype=int)
-
-    # Map peak indices to corresponding time values
-    peak_times_x = all_time_values_f[peak_indices_x]  # Extract peak times for X
-    peak_times_y = all_time_values_f[peak_indices_y]  # Extract peak times for Y
-    peak_times_z = all_time_values_f[peak_indices_z]  # Extract peak times for Z
-
-    # Plotting
-    plt.figure(figsize=(10, 8))
-
-    # Plot peaks for X-axis
-    plt.subplot(3, 1, 1)
-    plt.plot(all_time_values_f, all_x_values_f, label='X-axis')
-    plt.plot(peak_times_x, all_x_values_f[peak_indices_x], 'rx', label='Peaks')
-    plt.legend()
-    plt.title(f'Peaks in X-axis Data (File)')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Amplitude')
-
-    color = next(chosen_colors)
-
-    # X-axis
-    plt.subplot(3, 1, 1)
-    plt.plot(all_time_values_f, all_x_values_f, label='X-axis', color=color)
-    color = next(chosen_colors)
-    plt.plot(peak_times_x, all_x_values_f[peak_indices_x], 'rx', label='Peaks', color=color)
-    plt.legend()
-    plt.title('Peaks in X-axis Data')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Amplitude')
-
-    color = next(chosen_colors)
-
-    # Y-axis
-    plt.subplot(3, 1, 2)
-    plt.plot(all_time_values_f, all_y_values_f, label='Y-axis', color=color)
-    color = next(chosen_colors)
-    plt.plot(peak_times_y, all_y_values_f[peak_indices_y], 'rx', label='Peaks', color=color)
-    plt.legend()
-    plt.title('Peaks in Y-axis Data')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Amplitude')
-
-    color = next(chosen_colors)
-
-    # Z-axis
-    plt.subplot(3, 1, 3)
-    plt.plot(all_time_values_f, all_z_values_f, label='Z-axis', color=color)
-    color = next(chosen_colors)
-    plt.plot(peak_times_z, all_z_values_f[peak_indices_z], 'rx', label='Peaks', color=color)
-    plt.legend()
-    plt.title('Peaks in Z-axis Data')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Amplitude')               
+def peak_find(file_choice, time_values, all_x_values, all_y_values, all_z_values, wavelet_type, level, chosen_colors):
+    plt.figure(figsize=(14, 12))
+    
+    for axis, all_values, axis_label in zip(
+        ['X', 'Y', 'Z'], 
+        [all_x_values, all_y_values, all_z_values], 
+        ['X-axis', 'Y-axis', 'Z-axis']
+    ):
+        plt.subplot(3, 1, ['X', 'Y', 'Z'].index(axis) + 1)
+        for i, file_name in enumerate(file_choice):
+            # Apply wavelet transform to denoise the signal
+            processed_data = wavelet_transform(all_values[i], wavelet_type, level)
+            time = time_values[i]
+            
+            # Find peaks
+            peaks, _ = find_peaks(processed_data, height=None)  
+            
+            if len(peaks) > 0:
+                peak_times = np.array(time)[peaks]
+                peak_values = np.array(processed_data)[peaks]
+                
+                # Interpolate between the peaks
+                interp_time = np.linspace(min(time), max(time), 500)
+                interp_values = np.interp(interp_time, peak_times, peak_values)
+            else:
+                print(f"No peaks found for {file_name} on {axis_label}")
+                continue  # Skip to the next file if no peaks found
+            
+            # Plot the data
+            color = next(chosen_colors)
+            plt.plot(time, processed_data, label=f'{axis_label} - {file_name}', color=color, alpha=0.6)
+            plt.scatter(peak_times, peak_values, color=color, marker='o', label=f'Peaks - {file_name}')
+            plt.plot(interp_time, interp_values, color=color, linestyle='--', label=f'Interpolation - {file_name}')
+        
+        plt.title(f'{axis_label} Peaks and Interpolation')
+        plt.xlabel('Time (s)')
+        plt.ylabel(f'{axis_label} Amplitude')
+        plt.legend()
+    
+    plt.tight_layout()
+    plt.show()
