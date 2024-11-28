@@ -198,13 +198,6 @@ def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_va
     plt.tight_layout()  # Adjusts spacing to prevent overlap
     plt.show()
 
-def peak_find(file_choice, all_time_values, all_x_values, all_y_values, all_z_values, wavelet_type, level):
-    for i, file_name in enumerate(file_choice): 
-        # Perform wavelet transformation on each axis (x, y, z)
-        processed_x = wavelet_transform(all_x_values[i], wavelet_type, level)
-        processed_y = wavelet_transform(all_y_values[i], wavelet_type, level)
-        processed_z = wavelet_transform(all_z_values[i], wavelet_type, level)
-
 def peak_find(file_choice, all_time_values, all_x_values, all_y_values, all_z_values, wavelet_type, level, chosen_colors):
 
     # Flatten all data into 1D NumPy arrays
