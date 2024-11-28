@@ -190,51 +190,62 @@ def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_va
 
 
 def peak_find(file_choice, all_time_values, all_x_values, all_y_values, all_z_values, wavelet_type, level):
-    # Flatten all data into 1D NumPy arrays
-    all_time_values_f = np.concatenate(all_time_values)  # Flatten the nested time lists
-    all_x_values_f = np.concatenate(all_x_values)
-    all_y_values_f = np.concatenate(all_y_values)
-    all_z_values_f = np.concatenate(all_z_values)
+    for i, file_name in enumerate(file_choice): 
+        # Perform wavelet transformation on each axis (x, y, z)
+        processed_x = wavelet_transform(all_x_values[i], wavelet_type, level)
+        processed_y = wavelet_transform(all_y_values[i], wavelet_type, level)
+        processed_z = wavelet_transform(all_z_values[i], wavelet_type, level)
 
-    # Find peaks for each axis
-    peak_indices_x, _ = find_peaks(all_x_values_f, height=2.0, distance=50, prominence=1.0)  # Adjust these values as needed
-    peak_indices_y, _ = find_peaks(all_y_values_f, height=2.0, distance=50, prominence=1.0)
-    peak_indices_z, _ = find_peaks(all_z_values_f, height=2.0, distance=50, prominence=1.0)
+        # Set time and axis data (no flattening now, keeping as is)
+        all_time_values_f = all_time_values  # Time values (assuming they are already in an appropriate format)
+        all_x_values_f = processed_x  # X-axis values
+        all_y_values_f = processed_y  # Y-axis values
+        all_z_values_f = processed_z  # Z-axis values
 
-    # Map peak indices to corresponding time values
-    peak_times_x = all_time_values_f[peak_indices_x]  # Extract peak times for X
-    peak_times_y = all_time_values_f[peak_indices_y]  # Extract peak times for Y
-    peak_times_z = all_time_values_f[peak_indices_z]  # Extract peak times for Z
+        # Find peaks for each axis
+        peak_indices_x, _ = find_peaks(all_x_values_f, height=2.0, distance=50, prominence=1.0)
+        peak_indices_y, _ = find_peaks(all_y_values_f, height=2.0, distance=50, prominence=1.0)
+        peak_indices_z, _ = find_peaks(all_z_values_f, height=2.0, distance=50, prominence=1.0)
 
-    # Plotting
-    plt.figure(figsize=(10, 8))
+        # Ensure peak_indices are integers
+        peak_indices_x = np.array(peak_indices_x, dtype=int)
+        peak_indices_y = np.array(peak_indices_y, dtype=int)
+        peak_indices_z = np.array(peak_indices_z, dtype=int)
 
-    # X-axis
-    plt.subplot(3, 1, 1)
-    plt.plot(all_time_values_f, all_x_values_f, label='X-axis')
-    plt.plot(peak_times_x, all_x_values_f[peak_indices_x], 'rx', label='Peaks')
-    plt.legend()
-    plt.title('Peaks in X-axis Data')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Amplitude')
+        # Map peak indices to corresponding time values
+        peak_times_x = all_time_values_f[peak_indices_x]  # Extract peak times for X
+        peak_times_y = all_time_values_f[peak_indices_y]  # Extract peak times for Y
+        peak_times_z = all_time_values_f[peak_indices_z]  # Extract peak times for Z
 
-    # Y-axis
-    plt.subplot(3, 1, 2)
-    plt.plot(all_time_values_f, all_y_values_f, label='Y-axis')
-    plt.plot(peak_times_y, all_y_values_f[peak_indices_y], 'rx', label='Peaks')
-    plt.legend()
-    plt.title('Peaks in Y-axis Data')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Amplitude')
+        # Plotting
+        plt.figure(figsize=(10, 8))
 
-    # Z-axis
-    plt.subplot(3, 1, 3)
-    plt.plot(all_time_values_f, all_z_values_f, label='Z-axis')
-    plt.plot(peak_times_z, all_z_values_f[peak_indices_z], 'rx', label='Peaks')
-    plt.legend()
-    plt.title('Peaks in Z-axis Data')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Amplitude')
+        # Plot peaks for X-axis
+        plt.subplot(3, 1, 1)
+        plt.plot(all_time_values_f, all_x_values_f, label='X-axis')
+        plt.plot(peak_times_x, all_x_values_f[peak_indices_x], 'rx', label='Peaks')
+        plt.legend()
+        plt.title(f'Peaks in X-axis Data (File {file_name})')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Amplitude')
 
-    plt.tight_layout()
-    plt.show()
+        # Plot peaks for Y-axis
+        plt.subplot(3, 1, 2)
+        plt.plot(all_time_values_f, all_y_values_f, label='Y-axis')
+        plt.plot(peak_times_y, all_y_values_f[peak_indices_y], 'rx', label='Peaks')
+        plt.legend()
+        plt.title(f'Peaks in Y-axis Data (File {file_name})')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Amplitude')
+
+        # Plot peaks for Z-axis
+        plt.subplot(3, 1, 3)
+        plt.plot(all_time_values_f, all_z_values_f, label='Z-axis')
+        plt.plot(peak_times_z, all_z_values_f[peak_indices_z], 'rx', label='Peaks')
+        plt.legend()
+        plt.title(f'Peaks in Z-axis Data (File {file_name})')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Amplitude')
+
+        plt.tight_layout()
+        plt.show()                  
