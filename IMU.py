@@ -129,6 +129,7 @@ def plot_psd_data(file_choices, all_time_values, all_x_values, all_y_values, all
     plt.show()
 
 def plot_unprocessed_data(file_choice, time_values, x_values, y_values, z_values, chosen_colors):
+    
     plt.figure(figsize=(14, 8))
 
     for i, file_name in enumerate(file_choice):
@@ -224,7 +225,8 @@ def peak_find(file_choice, all_time_values, all_x_values, all_y_values, all_z_va
     # X-axis
     plt.subplot(3, 1, 1)
     plt.plot(all_time_values_f, all_x_values_f, label='X-axis', color=color)
-    plt.plot(peak_times_x, all_x_values_f[peak_indices_x], 'rx', label='Peaks')
+    color = next(chosen_colors)
+    plt.plot(peak_times_x, all_x_values_f[peak_indices_x], 'rx', label='Peaks', color=color)
     plt.legend()
     plt.title('Peaks in X-axis Data')
     plt.xlabel('Time (s)')
@@ -235,7 +237,8 @@ def peak_find(file_choice, all_time_values, all_x_values, all_y_values, all_z_va
     # Y-axis
     plt.subplot(3, 1, 2)
     plt.plot(all_time_values_f, all_y_values_f, label='Y-axis', color=color)
-    plt.plot(peak_times_y, all_y_values_f[peak_indices_y], 'rx', label='Peaks')
+    color = next(chosen_colors)
+    plt.plot(peak_times_y, all_y_values_f[peak_indices_y], 'rx', label='Peaks', color=color)
     plt.legend()
     plt.title('Peaks in Y-axis Data')
     plt.xlabel('Time (s)')
@@ -246,7 +249,8 @@ def peak_find(file_choice, all_time_values, all_x_values, all_y_values, all_z_va
     # Z-axis
     plt.subplot(3, 1, 3)
     plt.plot(all_time_values_f, all_z_values_f, label='Z-axis', color=color)
-    plt.plot(peak_times_z, all_z_values_f[peak_indices_z], 'rx', label='Peaks')
+    color = next(chosen_colors)
+    plt.plot(peak_times_z, all_z_values_f[peak_indices_z], 'rx', label='Peaks', color=color)
     plt.legend()
     plt.title('Peaks in Z-axis Data')
     plt.xlabel('Time (s)')

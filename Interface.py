@@ -13,9 +13,11 @@ from itertools import cycle
 ###################################################
 
 # IMU
-wavelet_type = 'db20'
-level = 4
+wavelet_type = 'db4'       # Wavelet type
+level = 5                   # Wavelet level
+
 colors = cycle(['red', 'blue', 'green', 'lawngreen', 'magenta', 'orange'])
+alt_color = cycle(['red', 'lawngreen', 'blue', 'magenta', 'green', 'orange'])
 
 # Segmentation:
 sample_rate = 16000         # Data sample rate (Hz)
@@ -41,7 +43,7 @@ person_paths = {
     'Zahid': 'C:\\Users\\Person5\\Downloads\\data\\',
 }
 
-def IMU(directory, wavelet_type, level, colors):
+def IMU(directory, wavelet_type, level, colors, alt_color):
     print("Welcome to the IMU analysis tool.")
     
     while True:
@@ -110,14 +112,14 @@ def IMU(directory, wavelet_type, level, colors):
             
         elif imu_choise=='2':
             print("Processed data is being plotted")
-            IMU_analysis(file_path,file_choice,'psd', wavelet_type, level, colors)
+            IMU_analysis(file_path,file_choice,'psd', wavelet_type, level, alt_color)
             
         elif imu_choise=='3':
             print("denoised data is being plotted")
             IMU_analysis(file_path,file_choice,'denoised', wavelet_type, level, colors)
         elif imu_choise=='4':
             print("Peaks being plotted")
-            IMU_analysis(file_path,file_choice,'Peaks',wavelet_type,level, colors)
+            IMU_analysis(file_path,file_choice,'Peaks',wavelet_type,level, alt_color)
         
         run_again = input("Run again? (y/n): ").strip().lower()
         if run_again not in yes:
@@ -206,7 +208,7 @@ def main():
             acoustic_directory = os.path.join(base_directory, 'Acoustic')
             acoustic(acoustic_directory)
         elif analysis_choice == '2':  # IMU analysis
-            IMU(base_directory, wavelet_type, level, colors)
+            IMU(base_directory, wavelet_type, level, colors, alt_color)
         else:
             print("Invalid selection. Please restart and choose '1' or '2'.")
     else:
