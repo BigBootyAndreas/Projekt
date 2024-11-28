@@ -65,27 +65,30 @@ def IMU(directory, wavelet_type, level):
         file_choice = []
         k = 0
 
-        choice = int(input("Enter the number corresponding to the file: ")) - 1
-        if k >= 1:
-            if 0 <= choice < len(imu_files):
-                if choice in file_choice:
-                    print("File already seleceted")
-                    if input("Are you done? (y/n)").lower() in no:
-                        continue
-                    
-                else: 
+        repeat = True
+
+        while repeat == True:
+            choice = int(input("Enter the number corresponding to the file: ")) - 1
+            if k >= 1:
+                if 0 <= choice < len(imu_files):
+                    if choice in file_choice:
+                        print("File already seleceted")
+                        if input("Are you done? (y/n)").lower() in yes:
+                            repeat = False
+                        
+                    else: 
+                        file_choice.append(choice)
+                        if input("Are you done? (y/n)").lower() in yes:
+                            repeat = False
+                        
+            elif k == 0:
+                if 0 <= choice < len(imu_files):
                     file_choice.append(choice)
-                    if input("Are you done? (y/n)").lower() in no:
-                        continue
-                    
-        elif k == 0:
-            if 0 <= choice < len(imu_files):
-                file_choice.append(choice)
-                if input("Are you done? (y/n)").lower() in no:
-                    continue
-                k += 1
-        else:
-            print("Invalid selection. Please choose a valid file number.")
+                    if input("Are you done? (y/n)").lower() in yes:
+                        repeat = False
+                        k += 1
+            else:
+                print("Invalid selection. Please choose a valid file number.")
       
         # Create file paths based on user choices
         file_path = []
