@@ -210,7 +210,12 @@ def peak_find(file_choice, time_values, all_x_values, all_y_values, all_z_values
             time = time_values[i]
             
             # Find peaks
-            peaks, _ = find_peaks(processed_data, height=None)  
+            peaks, properties = find_peaks(
+                processed_data, 
+                height=None,         # Only detect peaks ≥ 2.0 in height
+                distance=100,        # At least 50 data points apart
+                #prominence=1.0      # Prominence of ≥ 1.0
+            )
             
             if len(peaks) > 0:
                 peak_times = np.array(time)[peaks]
@@ -225,7 +230,7 @@ def peak_find(file_choice, time_values, all_x_values, all_y_values, all_z_values
             
             # Plot the data
             color = next(chosen_colors)
-            plt.plot(time, processed_data, label=f'{axis_label} - {file_name}', color=color, alpha=0.6)
+            #plt.plot(time, processed_data, label=f'{axis_label} - {file_name}', color=color, alpha=0.6)
             plt.scatter(peak_times, peak_values, color=color, marker='o', label=f'Peaks - {file_name}')
             plt.plot(interp_time, interp_values, color=color, linestyle='--', label=f'Interpolation - {file_name}')
         
