@@ -26,28 +26,17 @@ def IMU_analysis(file_path, file_choice, plot_type, wavelet_type, level, chosen_
 
             # Check if the CSV has enough columns to process
             if len(df.columns) >= 5:
-                # Get the starting epoch time for normalization (relative time)
-                start_epoch = float(df.iloc[0, 4]) / 1000  # Convert to seconds
-                
                 # Iterate over each row in the DataFrame
-                for _, row in df.iterrows():
-                    epoch_value = row.iloc[4]  # Use .iloc for position-based access
-                    
-                    try:
-                        # Convert epoch to seconds by dividing by 1000
-                        epoch_in_seconds = float(epoch_value) / 1000
-                        # Normalize epoch time to start from 0
-                        relative_time = epoch_in_seconds - start_epoch
-                        #print(relative_time)
-                        # Collect data for plotting
-                        time_values_temp.append(relative_time)  # Use relative time
-                        x_values_temp.append(float(row.iloc[1]))  # Column 2 (X-axis data)
-                        y_values_temp.append(float(row.iloc[2]))  # Column 3 (Y-axis data)
-                        z_values_temp.append(float(row.iloc[3]))  # Column 4 (Z-axis data)
+                for index, row in df.iterrows():
+                    # Use the row index for time (each row is 1/100th of a second)
+                    relative_time = index * 0.01  # Time in seconds (1/100th of a second per row)
 
-                    except ValueError:
-                        print(f"Invalid epoch value: {epoch_value}")
-            
+                    # Collect data for plotting
+                    time_values_temp.append(relative_time)  # Use relative time based on row index
+                    x_values_temp.append(float(row.iloc[2]))  # Column 2 (X-axis data)
+                    y_values_temp.append(float(row.iloc[3]))  # Column 3 (Y-axis data)
+                    z_values_temp.append(float(row.iloc[4]))  # Column 4 (Z-axis data)
+
             # Append the data for each file to the main lists
             all_x_values.append(x_values_temp)
             all_y_values.append(y_values_temp)
@@ -64,10 +53,10 @@ def IMU_analysis(file_path, file_choice, plot_type, wavelet_type, level, chosen_
         plot_unprocessed_data(file_choice, all_time_values, all_x_values, all_y_values, all_z_values, chosen_colors)
     elif plot_type == 'psd':
         plot_psd_data(file_choice, all_time_values, all_x_values, all_y_values, all_z_values, wavelet_type, level, chosen_colors)
-    elif plot_type== 'denoised':
-        plot_denoised(file_choice, all_time_values,all_x_values,all_y_values,all_z_values, wavelet_type, level, chosen_colors)
-    elif plot_type=='Peaks':
-        peak_find(file_choice, all_time_values, all_x_values, all_y_values ,all_z_values, wavelet_type, level, chosen_colors)
+    elif plot_type == 'denoised':
+        plot_denoised(file_choice, all_time_values, all_x_values, all_y_values, all_z_values, wavelet_type, level, chosen_colors)
+    elif plot_type == 'Peaks':
+        peak_find(file_choice, all_time_values, all_x_values, all_y_values, all_z_values, wavelet_type, level, chosen_colors)
 
 
 # Function to perform wavelet transform and return processed data
@@ -81,13 +70,14 @@ def wavelet_transform(data, wavelet, level):
     # Ensure the reconstructed data has the same length as the input
     return reconstructed_data[:len(data)]
 
+
 # Function to plot Power Spectral Density (PSD) for each axis after wavelet processing
 def plot_psd_data(file_choices, all_time_values, all_x_values, all_y_values, all_z_values, wavelet_type, level, chosen_colors):
 
     plt.figure(figsize=(14, 12))  # Create a figure large enough for 3 subplots
     
-        # Calculate the sampling frequency from the first file (assuming all files have the same time spacing)
-    sampling_freq = 1 / (all_time_values[0][1] - all_time_values[0][0])  # this should work now
+    # Calculate the sampling frequency (each row is 1/100th of a second)
+    sampling_freq = 1 / 0.01  # 1/100th of a second
 
     # Subplot for X data
     plt.subplot(3, 1, 1)
@@ -125,12 +115,12 @@ def plot_psd_data(file_choices, all_time_values, all_x_values, all_y_values, all
     plt.tight_layout()  # Adjusts spacing to prevent overlap between subplots
     plt.show()
 
+
+# Function to plot unprocessed data (time vs. X, Y, Z)
 def plot_unprocessed_data(file_choice, time_values, x_values, y_values, z_values, chosen_colors):
-    
     plt.figure(figsize=(14, 8))
 
     for i, file_name in enumerate(file_choice):
-
         color = next(chosen_colors)
 
         plt.subplot(3, 1, 1)
@@ -158,8 +148,9 @@ def plot_unprocessed_data(file_choice, time_values, x_values, y_values, z_values
     plt.tight_layout()  # Adjusts spacing to prevent overlap
     plt.show()
 
-def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_values, wavelet_type, level, chosen_colors):
 
+# Function to plot denoised data after wavelet processing
+def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_values, wavelet_type, level, chosen_colors):
     plt.figure(figsize=(14, 8))
 
     for i, file_name in enumerate(file_choice):
@@ -170,7 +161,7 @@ def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_va
         processed_x = wavelet_transform(all_x_values[i], wavelet_type, level)
         plt.subplot(3, 1, 1)
         plt.plot(time_values[i], processed_x, label=f'X Values - {file_name}', color=color)
-        plt.title('X vs. Time (denoising)')
+        plt.title('X vs. Time (Denoising)')
         plt.xlabel('Time (s)')
         plt.ylabel('X')
 
@@ -179,7 +170,7 @@ def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_va
         plt.subplot(3, 1, 2)
         processed_y = wavelet_transform(all_y_values[i], wavelet_type, level)
         plt.plot(time_values[i], processed_y, label=f'Y Values - {file_name}', color=color)
-        plt.title('Y vs. Time (donoising)')
+        plt.title('Y vs. Time (Denoising)')
         plt.xlabel('Time (s)')
         plt.ylabel('Y')
 
@@ -188,56 +179,64 @@ def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_va
         plt.subplot(3, 1, 3)
         processed_z = wavelet_transform(all_z_values[i], wavelet_type, level)
         plt.plot(time_values[i], processed_z, label=f'Z Values - {file_name}', color=color)
-        plt.title('Z vs. Time (denoising )')
+        plt.title('Z vs. Time (Denoising)')
         plt.xlabel('Time (s)')
         plt.ylabel('Z')
 
     plt.tight_layout()  # Adjusts spacing to prevent overlap
     plt.show()
 
+
+# Function to find and plot peaks
 def peak_find(file_choice, time_values, all_x_values, all_y_values, all_z_values, wavelet_type, level, chosen_colors):
-    plt.figure(figsize=(14, 12))
-    
-    for axis, all_values, axis_label in zip(
-        ['X', 'Y', 'Z'], 
-        [all_x_values, all_y_values, all_z_values], 
-        ['X-axis', 'Y-axis', 'Z-axis']
-    ):
-        plt.subplot(3, 1, ['X', 'Y', 'Z'].index(axis) + 1)
-        for i, file_name in enumerate(file_choice):
-            # Apply wavelet transform to denoise the signal
-            processed_data = wavelet_transform(all_values[i], wavelet_type, level)
-            time = time_values[i]
-            
-            # Find peaks
-            peaks, properties = find_peaks(
-                processed_data, 
-                height=None,         # Only detect peaks ≥ 2.0 in height
-                distance=200,        # At least 50 data points apart
-                #prominence=1.0      # Prominence of ≥ 1.0
-            )
-            
-            if len(peaks) > 0:
-                peak_times = np.array(time)[peaks]
-                peak_values = np.array(processed_data)[peaks]
-                
-                # Interpolate between the peaks
-                interp_time = np.linspace(min(time), max(time), 500)
-                interp_values = np.interp(interp_time, peak_times, peak_values)
-            else:
-                print(f"No peaks found for {file_name} on {axis_label}")
-                continue  # Skip to the next file if no peaks found
-            
-            # Plot the data
-            color = next(chosen_colors)
-            #plt.plot(time, processed_data, label=f'{axis_label} - {file_name}', color=color, alpha=0.6)
-            plt.scatter(peak_times, peak_values, color=color, marker='o', label=f'Peaks - {file_name}')
-            plt.plot(interp_time, interp_values, color=color, linestyle='--', label=f'Interpolation - {file_name}')
-        
-        plt.title(f'{axis_label} Peaks and Interpolation')
+    plt.figure(figsize=(14, 8))
+
+    for i, file_name in enumerate(file_choice):
+        # Process the data using wavelet transform
+        processed_x = wavelet_transform(all_x_values[i], wavelet_type, level)
+
+        # Ensure time_values[i] is a numpy array for proper indexing
+        time_values_np = np.array(time_values[i])
+
+        # Find peaks in the processed X data
+        peaks_x, _ = find_peaks(processed_x)
+
+        color = next(chosen_colors)
+        plt.subplot(3, 1, 1)
+        plt.plot(time_values_np, processed_x, label=f'X Values - {file_name}', color=color)
+
+        # Scatter peaks on the plot
+        plt.scatter(time_values_np[peaks_x], processed_x[peaks_x], color='red', marker='x', label='Peaks')
+        plt.title('X vs. Time (Peaks)')
         plt.xlabel('Time (s)')
-        plt.ylabel(f'{axis_label} Amplitude')
+        plt.ylabel('X')
         plt.legend()
-    
-    plt.tight_layout()
+
+        # Process Y data
+        processed_y = wavelet_transform(all_y_values[i], wavelet_type, level)
+        peaks_y, _ = find_peaks(processed_y)
+
+        color = next(chosen_colors)
+        plt.subplot(3, 1, 2)
+        plt.plot(time_values_np, processed_y, label=f'Y Values - {file_name}', color=color)
+        plt.scatter(time_values_np[peaks_y], processed_y[peaks_y], color='red', marker='x', label='Peaks')
+        plt.title('Y vs. Time (Peaks)')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Y')
+        plt.legend()
+
+        # Process Z data
+        processed_z = wavelet_transform(all_z_values[i], wavelet_type, level)
+        peaks_z, _ = find_peaks(processed_z)
+
+        color = next(chosen_colors)
+        plt.subplot(3, 1, 3)
+        plt.plot(time_values_np, processed_z, label=f'Z Values - {file_name}', color=color)
+        plt.scatter(time_values_np[peaks_z], processed_z[peaks_z], color='red', marker='x', label='Peaks')
+        plt.title('Z vs. Time (Peaks)')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Z')
+        plt.legend()
+
+    plt.tight_layout()  # Adjusts spacing to prevent overlap
     plt.show()
