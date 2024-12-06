@@ -47,14 +47,11 @@ def IMU(directory, wavelet_type, level, colors, alt_color):
     print("Welcome to the IMU analysis tool.")
     
     while True:
-
-        # Navigate to the 'IMU' subdirectory
         imu_directory = os.path.join(directory, 'IMU')
         if not os.path.exists(imu_directory):
             print("IMU directory not found in the specified path.")
             return
 
-        # List all CSV files in the IMU directory
         imu_files = [f for f in os.listdir(imu_directory) if f.endswith('.csv')]
 
         if not imu_files:
@@ -65,66 +62,60 @@ def IMU(directory, wavelet_type, level, colors, alt_color):
         for idx, file in enumerate(imu_files):
             print(f"{idx + 1}. {file}")
 
-        # Let the user select a file
         file_choice = []
+        file_labels = []
         k = 0
-
         repeat = True
 
-        while repeat == True:
+        while repeat:
             choice = int(input("Enter the number corresponding to the file: ")) - 1
             if k >= 1:
                 if 0 <= choice < len(imu_files):
                     if choice in file_choice:
-                        print("File already seleceted")
+                        print("File already selected")
                         if input("Are you done? (y/n)").lower() in yes:
                             repeat = False
-                        
                     else: 
                         file_choice.append(choice)
+                        label = input(f"Enter a label for {imu_files[choice]}: ")
+                        file_labels.append(label)
                         if input("Are you done? (y/n)").lower() in yes:
                             repeat = False
-                        
+                else:
+                    print("Invalid selection. Please choose a valid file number.")
             elif k == 0:
                 if 0 <= choice < len(imu_files):
                     file_choice.append(choice)
+                    label = input(f"Enter a label for {imu_files[choice]}: ")
+                    file_labels.append(label)
                     if input("Are you done? (y/n)").lower() in yes:
                         repeat = False
                         k += 1
-            else:
-                print("Invalid selection. Please choose a valid file number.")
-      
-        # Create file paths based on user choices
-        file_path = []
+                else:
+                    print("Invalid selection. Please choose a valid file number.")
 
-        for i in range(len(file_choice)):
-            selected_file = imu_files[file_choice[i]]
-            full_path = os.path.join(imu_directory, selected_file)
-            file_path.append(full_path)
-            print(f"Processing file: {selected_file}")
+        file_path = [os.path.join(imu_directory, imu_files[i]) for i in file_choice]
 
-        imu_choise=[]
-
-        imu_choise=input ("Enter '1' for Unprocessed data or '2' for Processed data or '3' for denoised data or '4' for Peaks:")
+        imu_choise = input(
+            "Enter '1' for Unprocessed data, '2' for Processed data, '3' for Denoised data, or '4' for Peaks: ")
         if imu_choise == '1':
             print("Unprocessed data is being plotted")
-            IMU_analysis(file_path,file_choice,'unprocessed', wavelet_type, level, colors)
-            
-        elif imu_choise=='2':
+            IMU_analysis(file_path, file_labels, 'unprocessed', wavelet_type, level, colors)
+        elif imu_choise == '2':
             print("Processed data is being plotted")
-            IMU_analysis(file_path,file_choice,'psd', wavelet_type, level, alt_color)
-            
-        elif imu_choise=='3':
-            print("denoised data is being plotted")
-            IMU_analysis(file_path,file_choice,'denoised', wavelet_type, level, colors)
-        elif imu_choise=='4':
+            IMU_analysis(file_path, file_labels, 'psd', wavelet_type, level, alt_color)
+        elif imu_choise == '3':
+            print("Denoised data is being plotted")
+            IMU_analysis(file_path, file_labels, 'denoised', wavelet_type, level, colors)
+        elif imu_choise == '4':
             print("Peaks being plotted")
-            IMU_analysis(file_path,file_choice,'Peaks',wavelet_type,level, alt_color)
-        
+            IMU_analysis(file_path, file_labels, 'Peaks', wavelet_type, level, alt_color)
+
         run_again = input("Run again? (y/n): ").strip().lower()
         if run_again not in yes:
             print("Exiting the program.")
             break
+
 
 
 def acoustic(directory):

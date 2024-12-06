@@ -72,47 +72,54 @@ def wavelet_transform(data, wavelet, level):
 
 
 # Function to plot Power Spectral Density (PSD) for each axis after wavelet processing
-def plot_psd_data(file_choices, all_time_values, all_x_values, all_y_values, all_z_values, wavelet_type, level, chosen_colors):
+from matplotlib.ticker import MaxNLocator
 
-    plt.figure(figsize=(14, 12))  # Create a figure large enough for 3 subplots
+def plot_psd_data(file_labels, all_time_values, all_x_values, all_y_values, all_z_values, wavelet_type, level, chosen_colors):
+    import matplotlib.ticker as ticker
     
-    # Calculate the sampling frequency (each row is 1/100th of a second)
+    plt.figure(figsize=(14, 12))
     sampling_freq = 1 / 0.01  # 1/100th of a second
 
     # Subplot for X data
     plt.subplot(3, 1, 1)
-    for i in range(len(file_choices)):  # Loop over each file's data
+    for i, label in enumerate(file_labels):
         color = next(chosen_colors)
-        processed_x = wavelet_transform(all_x_values[i], wavelet_type, level)  # Process the X data using wavelet transform
-        plt.psd(processed_x, Fs=sampling_freq, label=f'File {file_choices[i]}', color=color)
-    plt.title('Power Spectral Density (X) after Wavelet Processing')
+        processed_x = wavelet_transform(all_x_values[i], wavelet_type, level)
+        plt.psd(processed_x, Fs=sampling_freq, label=label, color=color)
+    plt.title('Power Spectral Density (X)', pad=15)
     plt.xlabel('Frequency (Hz)')
     plt.ylabel('Power/Frequency (dB/Hz)')
     plt.legend()
+    plt.grid(True)
+    plt.gca().yaxis.set_major_locator(ticker.MaxNLocator(nbins=10))
 
     # Subplot for Y data
     plt.subplot(3, 1, 2)
-    for i in range(len(file_choices)):  # Loop over each file's data
+    for i, label in enumerate(file_labels):
         color = next(chosen_colors)
-        processed_y = wavelet_transform(all_y_values[i], wavelet_type, level)  # Process the Y data using wavelet transform
-        plt.psd(processed_y, Fs=sampling_freq, label=f'File {file_choices[i]}', color=color)
-    plt.title('Power Spectral Density (Y) after Wavelet Processing')
+        processed_y = wavelet_transform(all_y_values[i], wavelet_type, level)
+        plt.psd(processed_y, Fs=sampling_freq, label=label, color=color)
+    plt.title('Power Spectral Density (Y)', pad=15)
     plt.xlabel('Frequency (Hz)')
     plt.ylabel('Power/Frequency (dB/Hz)')
     plt.legend()
+    plt.grid(True)
+    plt.gca().yaxis.set_major_locator(ticker.MaxNLocator(nbins=10))
 
     # Subplot for Z data
     plt.subplot(3, 1, 3)
-    for i in range(len(file_choices)):  # Loop over each file's data
+    for i, label in enumerate(file_labels):
         color = next(chosen_colors)
-        processed_z = wavelet_transform(all_z_values[i], wavelet_type, level)  # Process the Z data using wavelet transform
-        plt.psd(processed_z, Fs=sampling_freq, label=f'File {file_choices[i]}', color=color)
-    plt.title('Power Spectral Density (Z) after Wavelet Processing')
+        processed_z = wavelet_transform(all_z_values[i], wavelet_type, level)
+        plt.psd(processed_z, Fs=sampling_freq, label=label, color=color)
+    plt.title('Power Spectral Density (Z)', pad=15)
     plt.xlabel('Frequency (Hz)')
     plt.ylabel('Power/Frequency (dB/Hz)')
     plt.legend()
+    plt.grid(True)
+    plt.gca().yaxis.set_major_locator(ticker.MaxNLocator(nbins=10))
 
-    plt.tight_layout()  # Adjusts spacing to prevent overlap between subplots
+    plt.tight_layout(pad=3.0)
     plt.show()
 
 
@@ -128,6 +135,7 @@ def plot_unprocessed_data(file_choice, time_values, x_values, y_values, z_values
         plt.title('X vs. Time (Unprocessed)')
         plt.xlabel('Time (s)')
         plt.ylabel('X')
+        plt.grid(True)  # Add grid
 
         color = next(chosen_colors)
 
@@ -136,6 +144,7 @@ def plot_unprocessed_data(file_choice, time_values, x_values, y_values, z_values
         plt.title('Y vs. Time (Unprocessed)')
         plt.xlabel('Time (s)')
         plt.ylabel('Y')
+        plt.grid(True)  # Add grid
 
         color = next(chosen_colors)
 
@@ -144,13 +153,14 @@ def plot_unprocessed_data(file_choice, time_values, x_values, y_values, z_values
         plt.title('Z vs. Time (Unprocessed)')
         plt.xlabel('Time (s)')
         plt.ylabel('Z')
+        plt.grid(True)  # Add grid
 
     plt.tight_layout()  # Adjusts spacing to prevent overlap
     plt.show()
 
 
 # Function to plot denoised data after wavelet processing
-def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_values, wavelet_type, level, chosen_colors):
+def plot_denoised(file_choice, time_values, all_x_values, all_y_values, all_z_values, wavelet_type, level, chosen_colors):
     plt.figure(figsize=(14, 8))
 
     for i, file_name in enumerate(file_choice):
@@ -161,27 +171,30 @@ def plot_denoised(file_choice, time_values, all_x_values, all_y_values ,all_z_va
         processed_x = wavelet_transform(all_x_values[i], wavelet_type, level)
         plt.subplot(3, 1, 1)
         plt.plot(time_values[i], processed_x, label=f'X Values - {file_name}', color=color)
-        plt.title('X vs. Time (Denoising)')
+        plt.title('X vs. Time (Denoised)')
         plt.xlabel('Time (s)')
         plt.ylabel('X')
+        plt.grid(True)  # Add grid
 
         color = next(chosen_colors)
 
         plt.subplot(3, 1, 2)
         processed_y = wavelet_transform(all_y_values[i], wavelet_type, level)
         plt.plot(time_values[i], processed_y, label=f'Y Values - {file_name}', color=color)
-        plt.title('Y vs. Time (Denoising)')
+        plt.title('Y vs. Time (Denoised)')
         plt.xlabel('Time (s)')
         plt.ylabel('Y')
+        plt.grid(True)  # Add grid
 
         color = next(chosen_colors)
 
         plt.subplot(3, 1, 3)
         processed_z = wavelet_transform(all_z_values[i], wavelet_type, level)
         plt.plot(time_values[i], processed_z, label=f'Z Values - {file_name}', color=color)
-        plt.title('Z vs. Time (Denoising)')
+        plt.title('Z vs. Time (Denoised)')
         plt.xlabel('Time (s)')
         plt.ylabel('Z')
+        plt.grid(True)  # Add grid
 
     plt.tight_layout()  # Adjusts spacing to prevent overlap
     plt.show()
@@ -211,6 +224,7 @@ def peak_find(file_choice, time_values, all_x_values, all_y_values, all_z_values
         plt.xlabel('Time (s)')
         plt.ylabel('X')
         plt.legend()
+        plt.grid(True)  # Add grid
 
         # Process Y data
         processed_y = wavelet_transform(all_y_values[i], wavelet_type, level)
@@ -224,6 +238,7 @@ def peak_find(file_choice, time_values, all_x_values, all_y_values, all_z_values
         plt.xlabel('Time (s)')
         plt.ylabel('Y')
         plt.legend()
+        plt.grid(True)  # Add grid
 
         # Process Z data
         processed_z = wavelet_transform(all_z_values[i], wavelet_type, level)
@@ -237,6 +252,7 @@ def peak_find(file_choice, time_values, all_x_values, all_y_values, all_z_values
         plt.xlabel('Time (s)')
         plt.ylabel('Z')
         plt.legend()
+        plt.grid(True)  # Add grid
 
     plt.tight_layout()  # Adjusts spacing to prevent overlap
     plt.show()
