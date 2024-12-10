@@ -25,50 +25,48 @@ def plot_raw_data(directory):
     # Get all CSV files in the directory
     csv_files = glob.glob(os.path.join(directory, '*.csv'))
 
-    # Initialize lists to store time and Column 3 data from all files
+    # Initialize lists to store the Column 3 data from all files
     col3_all = []
-    time_all = []
-
-    # Process each CSV file and collect time and Column 3 data
+    
+    # Process each CSV file and collect Column 3 data
     for file_path in csv_files:
         print(f'Processing file: {file_path}')
         
         # Read CSV and extract columns
         data = pd.read_csv(file_path)
-        time = data.iloc[:, 1].values  # Assuming column 2 is the time
-        col3 = data.iloc[:, 2].values  # Column 3
+        col3 = data.iloc[:, 2].values  # Assuming column 3 contains the amplitude data
 
-        if len(col3) == 0 or len(time) == 0:
-            print(f"Warning: {file_path} contains no data in Column 2 or 3.")
+        if len(col3) == 0:
+            print(f"Warning: {file_path} contains no data in Column 3.")
             continue
         
         # Denoise the data using wavelet transform
-        col3_denoised = wavelet_denoise(col3)
+        col3_denoised = col3
 
-        # Append to the lists
-        time_all.append(time)
+        # Append to the list
         col3_all.append(col3_denoised)
 
     if not col3_all:
-        print("No valid data found in Column 2 or 3 of any CSV file.")
+        print("No valid data found in Column 3 of any CSV file.")
         return
 
     # Ensure all collected data is of the same length
     min_length = min(map(len, col3_all))
     col3_all = [col[:min_length] for col in col3_all]
-    time_all = [t[:min_length] for t in time_all]
 
-    # Compute the mean
+    # Compute the mean of the denoised data
     mean_col3 = np.mean(col3_all, axis=0)
-    mean_time = np.mean(time_all, axis=0)  # Average time axis
 
-    # Plot the denoised mean data
+    # Convert row index to time in seconds (since each row corresponds to 1/16000th of a second)
+    time_seconds = np.arange(len(mean_col3)) / 16000.0
+
+    # Plot the denoised data against time (in seconds)
     plt.figure(figsize=(12, 6))
-    plt.plot(mean_time, mean_col3, label='Denoised Acoustic Data', color='b')
-    plt.title('Denoised Data: Amplitude vs Time')
+    plt.plot(time_seconds, mean_col3, label='Raw Acoustic Data', color='g')
+    plt.title('Raw Data: Amplitude vs Time (in seconds)')
     plt.xlabel('Time (s)')
     plt.ylabel('Amplitude')
-    plt.grid(True)
+    #plt.grid(True)
     plt.legend()
     plt.show()
 

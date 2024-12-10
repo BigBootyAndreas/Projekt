@@ -2,7 +2,6 @@ import os
 import pandas as pd
 
 def segmentation_analysis(input_dir, window, step_size, rate_hz, sample_dir, output_dir, amp_tol, amp_var_tol):
-
     def calculate_reference_features(sample):
         amplitude_data = sample.iloc[:, 2]
         return {
@@ -11,7 +10,7 @@ def segmentation_analysis(input_dir, window, step_size, rate_hz, sample_dir, out
         }
 
     # Reference sample files
-    reference_sample_files = [f for f in os.listdir(sample_dir) if "sample" in f and f.endswith(".csv")]
+    reference_sample_files = [f for f in os.listdir(sample_dir) if f.endswith(".csv")]
 
     # Load each reference sample as a DataFrame and compute its mean and variance
     reference_samples = [pd.read_csv(os.path.join(sample_dir, sample)) for sample in reference_sample_files]
@@ -25,23 +24,30 @@ def segmentation_analysis(input_dir, window, step_size, rate_hz, sample_dir, out
 
     # Sampling parameters
     sample_rate = rate_hz  # in Hz
-    window_samples = window * sample_rate  # 30 seconds of samples (480,000 samples at 16kHz)
-    step_samples = step_size * sample_rate  # step by 5 seconds (80,000 samples at 16kHz)
+    window_samples = window * sample_rate  # Number of samples for the window
+    step_samples = int(step_size * sample_rate)  # Step size in samples
 
     # Process each 5-minute data file
     files = sorted([f for f in os.listdir(input_dir) if os.path.isfile(os.path.join(input_dir, f)) and f.endswith(".csv")])
+
+    # Variable to track the leftover data from the previous file
+    leftover_data = pd.Series([])
 
     for file_name in files:
         print(f"Processing file: {file_name}")
         file_path = os.path.join(input_dir, file_name)
         data = pd.read_csv(file_path)
 
+        # Concatenate leftover data from the previous file with the current file
+        if not leftover_data.empty:
+            data = pd.concat([leftover_data, data], ignore_index=True)
+
         # Sliding window over the data in sample counts
         start_index = 0
         matching_segments = []
 
         while start_index + window_samples <= len(data):
-            # Extract the window segment of 30 seconds (480,000 samples)
+            # Extract the window segment of the data
             window_data = data.iloc[start_index : start_index + window_samples]
             
             # Extract amplitude data from the third column
@@ -71,6 +77,9 @@ def segmentation_analysis(input_dir, window, step_size, rate_hz, sample_dir, out
 
             # Move the sliding window
             start_index += step_samples
+
+        # Update leftover data for the next file
+        leftover_data = data.iloc[start_index:] if start_index < len(data) else pd.Series([])
 
         # Save results to a file
         if matching_segments:

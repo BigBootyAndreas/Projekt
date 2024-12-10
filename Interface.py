@@ -21,12 +21,12 @@ alt_color = cycle(['red', 'lawngreen', 'blue', 'magenta', 'green', 'orange'])
 
 # Segmentation:
 sample_rate = 16000         # Data sample rate (Hz)
-window_samples = 5          # window size, should match sample size (s)
-step_size = 1               # Incremnts between each window scan (s)
+window_samples = 85          # window size, should match sample size (s)
+step_size = 0.5               # Incremnts between each window scan (s)
 sample_dir = 'samples\\'    # Sample directory (default: 'samples\\')
 output_dir = 'results\\'    # Output directory (default: 'results\\')
-amp_tol = 0.0002            # Amplitude tolerance (default: 0.0002)
-amp_var_tol = 0.0002        # Amplitude variance tolerance (default: 0.0002)
+amp_tol = 0.00000003           # Amplitude tolerance (default: 0.0002)
+amp_var_tol = 0.0000003        # Amplitude variance tolerance (default: 0.0002)
 
 # Interface inputs
 yes = {'yes', 'y', 'ye', ''}
